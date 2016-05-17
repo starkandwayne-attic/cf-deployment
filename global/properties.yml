@@ -184,7 +184,7 @@ properties:
     directories: null
     disable_custom_buildpacks: false
     droplets:
-      .: (( inject meta.blobstore_config ))
+      .: (( inject meta.cf.blobstore_config ))
       droplet_directory_key: (( concat meta.cf.base_domain "-cc-droplets" ))
       max_staged_droplets_stored: null
     external_host: api
@@ -234,7 +234,7 @@ properties:
     min_cli_version: null
     min_recommended_cli_version: null
     packages:
-      .: (( inject meta.blobstore_config ))
+      .: (( inject meta.cf.blobstore_config ))
       app_package_directory_key: (( concat meta.cf.base_domain "-cc-packages" ))
       max_package_size: 1073741824
       max_valid_packages_stored: null
@@ -247,7 +247,7 @@ properties:
         total_services: 100
     reserved_private_domains: null
     resource_pool:
-      .: (( inject meta.blobstore_config ))
+      .: (( inject meta.cf.blobstore_config ))
       resource_directory_key: (( concat meta.cf.base_domain "-cc-resources" ))
     security_event_logging:
       enabled: null
