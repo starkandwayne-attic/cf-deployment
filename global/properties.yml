@@ -10,15 +10,15 @@ meta:
         pass: (( param "Set a password for the Cloud Foundry Admin User" ))
       blobstore:
         user: (( param "Set the blobstore webdav (basic authentication) user" ))
-        pass: (( param "Set the blobstore webdave user's password" ))
+        pass: (( param "Set the blobstore webdav user's password" ))
         secret: (( param "Set the secret with which the blobstore will sign secure URLs" ))
       cc:
         bulk_api_user: (( param "Set the user for the bulk api" ))
         bulk_api_password: (( param "Set the password for the bulk API user" ))
         internal_api_user: (( param "Set the user for the internal api" ))
-        internal_api_user: (( param "Set the user for the internal api" ))
-        staging_api_password: (( param "Set the password for the staging API user" ))
-        staging_api_password: (( param "Set the password for the staging API user" ))
+        internal_api_password: (( param "Set the password for the internal ap useri" ))
+        staging_upload_user: (( param "Set the user for the staging API" ))
+        staging_upload_password: (( param "Set the password for the staging API user" ))
         db_encryption_key: (( param "Set the DB encryption key" ))
       loggregator:
         endpoint_secret: (( param "Set the shared secret to be used for securing the loggregator endpoint" ))
@@ -35,14 +35,15 @@ meta:
         doppler_secret: (( param "Set the doppler UAA client secret" ))
         gorouter_secret: (( param "Set the gorouter UAA client secret" ))
         login_secret: (( param "Set the login server's UAA client secret" ))
-        notification_secret: (( param "Set the notification service UAA client secret" ))
+        notifications_secret: (( param "Set the notifications service UAA client secret" ))
         ssh_proxy_secret: (( param "Set the ssh_proxy UAA secret" ))
         tcp_emitter_secret: (( param "Set the tcp emitter UAA secret" ))
         tcp_router_secret: (( param "Set the tcp router UAA secret" ))
 
     blobstore_config:
       blobstore_type: (( param "Set the blobstore type (webdav or fog)" ))
-      fog: (( param "Configure fog for the blobstore access, or nullify if not using" ))
+      fog_connection: (( param "Configure fog for the blobstore access, or nullify if not using" ))
+      cdn: null
       webdav_config:
         ca_cert: (( grab properties.blobstore.tls.ca_cert ))
         password: (( grab meta.cf.creds.blobstore.pass ))
@@ -138,12 +139,9 @@ properties:
     broker_client_max_async_poll_duration_minutes: null
     broker_client_timeout_seconds: 70
     buildpacks:
-      blobstore_type: webdav
+      .: (( inject meta.blobstore_config ))
       buildpack_directory_key: (( concat meta.cf.base_domain "-cc-buildpacks" ))
-      cdn: null
-      fog_connection: null
-      webdav_config: (( grab meta.cf.webdav_config ))
-    bulk_api_password: (( grab meta.cf.creds.cc.bulk_api_pass ))
+    bulk_api_password: (( grab meta.cf.creds.cc.bulk_api_password ))
     client_max_body_size: 15M
     db_encryption_key: (( grab meta.cf.creds.cc.db_encryption_key ))
     db_logging_level: debug2
@@ -186,12 +184,9 @@ properties:
     directories: null
     disable_custom_buildpacks: false
     droplets:
-      blobstore_type: webdav
-      cdn: null
+      .: (( inject meta.blobstore_config ))
       droplet_directory_key: (( concat meta.cf.base_domain "-cc-droplets" ))
-      fog_connection: null
       max_staged_droplets_stored: null
-      webdav_config: (( grab meta.cf.webdav_config ))
     external_host: api
     external_port: 9022
     external_protocol: null
@@ -212,7 +207,7 @@ properties:
       package: php-buildpack
     - name: binary_buildpack
       package: binary-buildpack
-    internal_api_password: (( grab meta.cf.creds.cc.internal_api_pass ))
+    internal_api_password: (( grab meta.cf.creds.cc.internal_api_password ))
     internal_api_user: (( grab meta.cf.creds.cc.internal_api_user ))
     jobs:
       app_bits_packer:
@@ -239,13 +234,10 @@ properties:
     min_cli_version: null
     min_recommended_cli_version: null
     packages:
+      .: (( inject meta.blobstore_config ))
       app_package_directory_key: (( concat meta.cf.base_domain "-cc-packages" ))
-      blobstore_type: webdav
-      cdn: null
-      fog_connection: null
       max_package_size: 1073741824
       max_valid_packages_stored: null
-      webdav_config: (( grab meta.cf.webdav_config ))
     quota_definitions:
       default:
         memory_limit: 10240
@@ -255,11 +247,8 @@ properties:
         total_services: 100
     reserved_private_domains: null
     resource_pool:
-      blobstore_type: webdav
-      cdn: null
-      fog_connection: null
+      .: (( inject meta.blobstore_config ))
       resource_directory_key: (( concat meta.cf.base_domain "-cc-resources" ))
-      webdav_config: (( grab meta.cf.webdav_config ))
     security_event_logging:
       enabled: null
     security_group_definitions:
@@ -293,7 +282,7 @@ properties:
       cutoff_age_in_days: 31
     srv_api_uri: (( concat "https://api." meta.cf.system_domain ))
     stacks: null
-    staging_upload_password: (( grab meta.cf.creds.cc.staging_upload_pass ))
+    staging_upload_password: (( grab meta.cf.creds.cc.staging_upload_password ))
     staging_upload_user: (( grab meta.cf.creds.cc.staging_upload_user ))
     system_buildpacks:
     - name: staticfile_buildpack
@@ -325,7 +314,7 @@ properties:
     user_buildpacks: []
     users_can_select_backend: true
     volume_services_enabled: true
-    webdav_config: (( grab meta.cf.webdav_config ))
+    webdav_config: (( grab meta.cf.blobstore_config.webdav_config ))
   ccdb:
     address: (( grab meta.cf.ccdb.host ))
     databases:
@@ -482,7 +471,7 @@ properties:
     machines:
     - (( grab meta.cf.nats.servers ))
     monitor_port: 4221
-    password: (( grab meta.cf.nats.port ))
+    password: (( grab meta.cf.nats.pass ))
     port: 4222
     prof_port: 0
     trace: false
@@ -624,7 +613,7 @@ properties:
     ssl:
       port: 8443
     sslCertificate: (( grab meta.cf.uaa.ssl_cert ))
-    sslPrivateKey: (( grab meta.cf.uaa.sl_key ))
+    sslPrivateKey: (( grab meta.cf.uaa.ssl_key ))
     url: (( concat "https://uaa." meta.cf.system_domain ))
     user: null
     zones:
