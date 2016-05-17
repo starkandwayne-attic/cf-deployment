@@ -2,7 +2,7 @@
 meta:
   cf:
     base_domain: (( param "Enter the Cloud Foundry base domain" ))
-    apps_domains: [ (( concat "run." meta.cf.base_domain ))
+    apps_domains: [ (( concat "run." meta.cf.base_domain )) ]
     system_domain: (( concat "system." meta.cf.base_domain ))
     creds:
       admin:

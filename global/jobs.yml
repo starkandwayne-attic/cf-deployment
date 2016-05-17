@@ -337,7 +337,7 @@ jobs:
   properties:
     metron_agent:
       zone: z2
--  instances: 1
+- instances: 1
   name: ha_proxy_z1
   .: (( inject meta.jobs.ha_proxy ))
   properties:
@@ -509,13 +509,13 @@ jobs:
       zone: z2
     traffic_controller:
       zone: z2
--  instances: 1
+- instances: 1
   name: router_z1
   .: (( inject meta.jobs.router ))
   properties:
     metron_agent:
       zone: z1
--  instances: 0
+- instances: 0
   name: router_z2
   properties:
     metron_agent:
