@@ -139,7 +139,7 @@ properties:
     broker_client_max_async_poll_duration_minutes: null
     broker_client_timeout_seconds: 70
     buildpacks:
-      .: (( inject meta.blobstore_config ))
+      .: (( inject meta.cf.blobstore_config ))
       buildpack_directory_key: (( concat meta.cf.base_domain "-cc-buildpacks" ))
     bulk_api_password: (( grab meta.cf.creds.cc.bulk_api_password ))
     client_max_body_size: 15M
