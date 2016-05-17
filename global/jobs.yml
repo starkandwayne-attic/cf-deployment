@@ -1,0 +1,534 @@
+---
+meta:
+  jobs:
+    consul:
+      persistent_disk: (( param "How much persistent disk does consul get?" ))
+      properties:
+        consul:
+          agent:
+            mode: server
+      templates:
+      - name: consul_agent
+        release: cf
+      - name: metron_agent
+        release: cf
+      update:
+        max_in_flight: 1
+        serial: true
+    ha_proxy:
+      templates:
+      - name: haproxy
+        release: cf
+      - name: metron_agent
+        release: cf
+      - name: consul_agent
+        release: cf
+      update: {}
+      properties:
+        router:
+          servers: (( grab meta.cf.gorouter.servers ))
+    nats:
+      templates:
+      - name: nats
+        release: cf
+      - name: nats_stream_forwarder
+        release: cf
+      - name: metron_agent
+        release: cf
+      update: {}
+    etcd:
+      persistent_disk: (( param "How much persistent disk does etcd get?" ))
+      templates:
+      - name: etcd
+        release: cf
+      - name: etcd_metrics_server
+        release: cf
+      - name: metron_agent
+        release: cf
+      update:
+        max_in_flight: 1
+        serial: true
+    stats:
+      templates:
+      - name: collector
+        release: cf
+      - name: metron_agent
+        release: cf
+      update: {}
+    nfs:
+      persistent_disk: (( param "How much persistent disk does nfs get?" ))
+      templates:
+      - name: consul_agent
+        release: cf
+      - name: debian_nfs_server
+        release: cf
+      - name: metron_agent
+        release: cf
+      - name: blobstore
+        release: cf
+      - name: route_registrar
+        release: cf
+      update: {}
+      properties:
+        consul:
+          agent:
+            services:
+              blobstore: {}
+        route_registrar:
+          routes:
+          - name: blobstore
+            port: 80
+            registration_interval: 20s
+            tags:
+              component: blobstore
+            uris:
+            - (( concat "blobstore." meta.cf.system_domain ))
+    blobstore:
+      templates:
+      - name: consul_agent
+        release: cf
+      - name: metron_agent
+        release: cf
+      - name: blobstore
+        release: cf
+      - name: route_registrar
+        release: cf
+      update: {}
+      properties:
+        consul:
+          agent:
+            services:
+              blobstore: {}
+        route_registrar:
+          routes:
+          - name: blobstore
+            port: 80
+            registration_interval: 20s
+            tags:
+              component: blobstore
+            uris:
+            - (( concat "blobstore." meta.cf.system_domain ))
+    postgres:
+      persistent_disk: (( param "How much persistent disk does postgres get?" ))
+      templates:
+      - name: postgres
+        release: cf
+      - name: metron_agent
+        release: cf
+      update: {}
+    uaa:
+      templates:
+      - name: uaa
+        release: cf
+      - name: metron_agent
+        release: cf
+      - name: consul_agent
+        release: cf
+      - name: route_registrar
+        release: cf
+      - name: statsd-injector
+        release: cf
+      update: {}
+      properties:
+        consul:
+          agent:
+            services:
+              uaa: {}
+        route_registrar:
+          routes:
+          - health_check:
+              name: uaa-healthcheck
+              script_path: /var/vcap/jobs/uaa/bin/health_check
+            name: uaa
+            port: 8080
+            registration_interval: 4s
+            tags:
+              component: uaa
+            uris:
+            - (( concat "uaa." meta.cf.system_domain ))
+            - (( concat "*.uaa." meta.cf.system_domain ))
+            - (( concat "login." meta.cf.system_domain ))
+            - (( concat "*.login." meta.cf.system_domain ))
+        uaa:
+          proxy:
+            servers: (( grab meta.cf.gorouter.servers ))
+    api:
+      templates:
+      - name: consul_agent
+        release: cf
+      - name: java-buildpack
+        release: cf
+      - name: java-offline-buildpack
+        release: cf
+      - name: go-buildpack
+        release: cf
+      - name: binary-buildpack
+        release: cf
+      - name: nodejs-buildpack
+        release: cf
+      - name: ruby-buildpack
+        release: cf
+      - name: php-buildpack
+        release: cf
+      - name: python-buildpack
+        release: cf
+      - name: staticfile-buildpack
+        release: cf
+      - name: cloud_controller_ng
+        release: cf
+      - name: cloud_controller_clock
+        release: cf
+      - name: cloud_controller_worker
+        release: cf
+      - name: metron_agent
+        release: cf
+      - name: statsd-injector
+        release: cf
+      - name: route_registrar
+        release: cf
+      update: {}
+      properties:
+        consul:
+          agent:
+            services:
+              cloud_controller_ng: {}
+        nfs_server: (( grab properties.nfs_server ))
+        route_registrar:
+          routes:
+          - name: api
+            port: 9022
+            registration_interval: 20s
+            tags:
+              component: CloudController
+            uris:
+            - (( concat "api." meta.cf.system_domain ))
+    clock:
+      templates:
+      - name: cloud_controller_clock
+        release: cf
+      - name: metron_agent
+        release: cf
+      update: {}
+    api_worker:
+      templates:
+      - name: consul_agent
+        release: cf
+      - name: cloud_controller_worker
+        release: cf
+      - name: metron_agent
+        release: cf
+      update: {}
+      properties:
+        nfs_server: (( grab properties.nfs_server ))
+    hm9000:
+      templates:
+      - name: consul_agent
+        release: cf
+      - name: hm9000
+        release: cf
+      - name: metron_agent
+        release: cf
+      - name: route_registrar
+        release: cf
+      update: {}
+      properties:
+        consul:
+          agent:
+            services:
+              hm9000: {}
+        route_registrar:
+          routes:
+          - name: hm9000
+            port: 5155
+            registration_interval: 20s
+            tags:
+              component: HM9K
+            uris:
+            - (( concat "hm9000." meta.cf.system_domain ))
+    runner:
+      templates:
+      - name: consul_agent
+        release: cf
+      - name: dea_next
+        release: cf
+      - name: dea_logging_agent
+        release: cf
+      - name: metron_agent
+        release: cf
+      update:
+        max_in_flight: 1
+      properties:
+        consul:
+          agent:
+            services:
+              dea:
+                check:
+                  interval: 5m
+                  name: dns_health_check
+                  script: /var/vcap/jobs/dea_next/bin/dns_health_check
+                  status: passing
+    loggregator:
+      templates:
+      - name: doppler
+        release: cf
+      - name: syslog_drain_binder
+        release: cf
+      - name: metron_agent
+        release: cf
+      update: {}
+    doppler:
+      templates:
+      - name: doppler
+        release: cf
+      - name: syslog_drain_binder
+        release: cf
+      - name: metron_agent
+        release: cf
+      update: {}
+    trafficcontroller:
+      templates:
+      - name: loggregator_trafficcontroller
+        release: cf
+      - name: metron_agent
+        release: cf
+      - name: route_registrar
+        release: cf
+      update: {}
+      properties:
+        route_registrar:
+          routes:
+          - name: doppler
+            port: 8081
+            registration_interval: 20s
+            uris:
+            - (( concat "doppler." meta.cf.system_domain ))
+          - name: loggregator
+            port: 8080
+            registration_interval: 20s
+            uris:
+            - (( concat "loggregator." meta.cf.system_domain ))
+    router:
+      templates:
+      - name: consul_agent
+        release: cf
+      - name: gorouter
+        release: cf
+      - name: metron_agent
+        release: cf
+      update: {}
+      properties:
+        consul:
+          agent:
+            services:
+              gorouter: {}
+    errand:
+      lifecycle: errand
+
+jobs:
+- instances: 1
+  name: consul_z1
+  .: (( inject meta.jobs.consul ))
+  properties:
+    metron_agent:
+      zone: z1
+- instances: 0
+  name: consul_z2
+  .: (( inject meta.jobs.consul ))
+  properties:
+    metron_agent:
+      zone: z2
+-  instances: 1
+  name: ha_proxy_z1
+  .: (( inject meta.jobs.ha_proxy ))
+  properties:
+    metron_agent:
+      zone: z1
+- instances: 1
+  name: nats_z1
+  .: (( inject meta.jobs.nats ))
+  properties:
+    metron_agent:
+      zone: z1
+- instances: 0
+  name: nats_z2
+  .: (( inject meta.jobs.nats ))
+  properties:
+    metron_agent:
+      zone: z2
+- instances: 1
+  name: etcd_z1
+  .: (( inject meta.jobs.etcd ))
+  properties:
+    metron_agent:
+      zone: z1
+- instances: 0
+  name: etcd_z2
+  .: (( inject meta.jobs.etcd ))
+  properties:
+    metron_agent:
+      zone: z2
+- instances: 0
+  name: stats_z1
+  .: (( inject meta.jobs.stats ))
+  properties:
+    metron_agent:
+      zone: z1
+- instances: 0
+  name: nfs_z1
+  .: (( inject meta.jobs.nfs ))
+  properties:
+    metron_agent:
+      zone: z1
+- instances: 1
+  name: blobstore_z1
+  .: (( inject meta.jobs.blobstore ))
+  properties:
+    metron_agent:
+      zone: z1
+- instances: 1
+  name: postgres_z1
+  .: (( inject meta.jobs.postgres ))
+  properties:
+    metron_agent:
+      zone: z1
+- instances: 1
+  name: uaa_z1
+  .: (( inject meta.jobs.uaa ))
+  properties:
+    metron_agent:
+      zone: z1
+- instances: 0
+  name: uaa_z2
+  .: (( inject meta.jobs.uaa ))
+  properties:
+    metron_agent:
+      zone: z2
+- instances: 1
+  name: api_z1
+  .: (( inject meta.jobs.api ))
+  properties:
+    metron_agent:
+      zone: z1
+- instances: 0
+  name: api_z2
+  .: (( inject meta.jobs.api ))
+  properties:
+    metron_agent:
+      zone: z2
+- instances: 0
+  name: clock_global
+  .: (( inject meta.jobs.clock ))
+  properties:
+    metron_agent:
+      zone: z1
+- instances: 0
+  name: api_worker_z1
+  .: (( inject meta.jobs.api_worker ))
+  properties:
+    metron_agent:
+      zone: z1
+- instances: 0
+  name: api_worker_z2
+  .: (( inject meta.jobs.api_worker ))
+  properties:
+    metron_agent:
+      zone: z2
+- instances: 1
+  name: hm9000_z1
+  .: (( inject meta.jobs.hm9000 ))
+  properties:
+    metron_agent:
+      zone: z1
+- instances: 0
+  name: hm9000_z2
+  .: (( inject meta.jobs.hm9000 ))
+  properties:
+    metron_agent:
+      zone: z2
+- instances: 1
+  name: runner_z1
+  .: (( inject meta.jobs.runner ))
+  properties:
+    dea_next:
+      zone: z1
+    metron_agent:
+      zone: z1
+- instances: 0
+  name: runner_z2
+  .: (( inject meta.jobs.runner ))
+  properties:
+    dea_next:
+      zone: z2
+    metron_agent:
+      zone: z2
+- instances: 0
+  name: loggregator_z1
+  .: (( inject meta.jobs.loggregator ))
+  properties:
+    doppler:
+      zone: z1
+    metron_agent:
+      zone: z1
+- instances: 0
+  name: loggregator_z2
+  .: (( inject meta.jobs.loggregator ))
+  properties:
+    doppler:
+      zone: z2
+    metron_agent:
+      zone: z2
+- instances: 1
+  name: doppler_z1
+  .: (( inject meta.jobs.doppler ))
+  properties:
+    doppler:
+      zone: z1
+    metron_agent:
+      zone: z1
+- instances: 0
+  name: doppler_z2
+  .: (( inject meta.jobs.doppler ))
+  properties:
+    doppler:
+      zone: z2
+    metron_agent:
+      zone: z2
+- instances: 1
+  name: loggregator_trafficcontroller_z1
+  .: (( inject meta.jobs.trafficcontroller ))
+  properties:
+    metron_agent:
+      zone: z1
+    traffic_controller:
+      zone: z1
+- instances: 0
+  name: loggregator_trafficcontroller_z2
+  .: (( inject meta.jobs.trafficcontroller ))
+  properties:
+    metron_agent:
+      zone: z2
+    traffic_controller:
+      zone: z2
+-  instances: 1
+  name: router_z1
+  .: (( inject meta.jobs.router ))
+  properties:
+    metron_agent:
+      zone: z1
+-  instances: 0
+  name: router_z2
+  properties:
+    metron_agent:
+      zone: z2
+- instances: 1
+  name: acceptance_tests
+  .: (( inject meta.jobs.errand ))
+  templates:
+  - name: acceptance-tests
+    release: cf
+- instances: 1
+  name: smoke_tests
+  .: (( inject meta.jobs.errand ))
+  templates:
+  - name: smoke-tests
+    release: cf

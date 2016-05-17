@@ -1,0 +1,43 @@
+---
+meta:
+  cf:
+    base_domain: bosh-lite.com
+    conul:
+      servers: (( grab jobs.consul_z1.networks.cf.static_ips ))
+    gorouter:
+      servers: (( grab jobs.router_z1.networks.cf.static_ips ))
+    etcd:
+      servers: (( grab jobs.etcd_z1.networks.cf.static_ips ))
+    nats:
+      servers: (( grab jobs.nats_z1.networks.cf.static_ips ))
+
+    uaadb:
+      host: (( grab jobs.postgres_z1.networks.cf.static_ips.0 ))
+      scheme: postgres
+
+    ccdb:
+      host: (( grab jobs.postgres_z1.networks.cf.static_ips.0 ))
+      scheme: postgres
+
+    databases:
+      db_scheme: postgres
+      port: 5524
+      roles:
+      - tag: admin
+        name: ccadmin
+        password: (( param "Set the ccadmin db password" ))
+      - tag: admin
+        name: uaaadmin
+        password: (( param "Set the uaaadmin db password" ))
+      databases:
+      - tag: cc
+        name: ccdb
+        citext: true
+      - tag: uaa
+        name: uaadb
+        citext: true
+      collect_statement_statistics: true
+
+    blobstore_config:
+      blobstore_type: webdav
+    nfs: ~

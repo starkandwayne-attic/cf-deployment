@@ -1,0 +1,86 @@
+---
+meta:
+  jobs:
+    consul:
+      persistent_disk: 1024
+    etcd:
+      persistent_disk: 10240
+    nfs:
+      persistent_disk: 102400
+    blobstore:
+      persistent_disk: 102400
+    postgres:
+      persistent_disk: 4096
+
+jobs:
+- name: consul_z1
+  resource_pool: warden
+  networks:
+  - name: cf
+    static_ips: (( static_ips(13, 14, 15)  ))
+- name: ha_proxy_z1
+  resource_pool: warden
+  networks:
+  - name: cf
+    static_ips: (( static_ips(8) ))
+- name: nats_z1
+  resource_pool: warden
+  networks:
+  - name: cf
+    static_ips: (( static_ips(1) ))
+- name: etcd_z1
+  resource_pool: warden
+  networks:
+  - name: cf
+    static_ips: (( static_ips(10, 11) ))
+- name: blobstore_z1
+  resource_pool: warden
+  networks:
+  - name: cf
+- name: postgres_z1
+  resource_pool: warden
+  networks:
+  - name: cf
+    static_ips: (( static_ips(7) ))
+- name: uaa_z1
+  resource_pool: warden
+  networks:
+  - name: cf
+- name: api_z1
+  resource_pool: warden
+  networks:
+  - name: cf
+- name: clock_z1
+  resource_pool: warden
+  networks:
+  - name: cf
+- name: api_wprker_z1
+  resource_pool: warden
+  networks:
+  - name: cf
+- name: hm9000_z1
+  resource_pool: warden
+  networks:
+  - name: cf
+- name: runner_z1
+  resource_pool: warden
+  networks:
+  - name: cf
+    static_ips: (( static_ips(6) ))
+- name: loggregator_z1
+  resource_pool: warden
+  networks:
+  - name: cf
+- name: doppler_z1
+  resource_pool: warden
+  networks:
+  - name: cf
+- name: trafficcontroller_z1
+  resource_pool: warden
+  networks:
+  - name: cf
+- name: router_z1
+  resource_pool: warden
+  networks:
+  - name: cf
+    static_ips: (( static_ips(5) ))

@@ -1,0 +1,4 @@
+---
+networks:
+- name: cf
+  subnets: (( param "Specify the subnet to use for CF" ))

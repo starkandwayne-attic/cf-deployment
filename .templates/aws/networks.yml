@@ -1,0 +1,21 @@
+---
+networks:
+- name: concourse
+  type: manual
+  subnets: (( param "Specify your concourse subnet" ))
+
+jobs:
+- name: web
+  networks:
+  - name: concourse
+    static_ips: (( static_ips 0, 1, 2, 3, 5 ))
+- name: haproxy
+  networks:
+  - name: concourse
+    static_ips: (( static_ips 10, 11, 12, 13, 14 ))
+- name: worker
+  networks:
+  - name: concourse
+- name: db
+  networks:
+  - name: concourse

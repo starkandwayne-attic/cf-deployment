@@ -1,0 +1,10 @@
+---
+resource_pools:
+- name: warden
+  cloud_properties: {}
+
+compilation:
+  cloud_properties: {}
+  workers: 6
+  network: cf1
+  reuse_compilation_vms: true
