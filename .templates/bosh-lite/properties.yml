@@ -1,8 +1,7 @@
 ---
 meta:
   cf:
-    base_domain: bosh-lite.com
-    conul:
+    consul:
       servers: (( grab jobs.consul_z1.networks.cf.static_ips ))
     gorouter:
       servers: (( grab jobs.router_z1.networks.cf.static_ips ))
