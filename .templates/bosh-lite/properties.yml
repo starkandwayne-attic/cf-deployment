@@ -12,31 +12,41 @@ meta:
 
     uaadb:
       host: (( grab jobs.postgres_z1.networks.cf.static_ips.0 ))
-      scheme: postgres
+      scheme: postgresql
+      port: (( grab properties.databases.port ))
+      user: uaaadmin
+      pass: (( grab properties.databases.roles.uaaadmin.password ))
 
     ccdb:
       host: (( grab jobs.postgres_z1.networks.cf.static_ips.0 ))
       scheme: postgres
-
-    databases:
-      db_scheme: postgres
-      port: 5524
-      roles:
-      - tag: admin
-        name: ccadmin
-        password: (( param "Set the ccadmin db password" ))
-      - tag: admin
-        name: uaaadmin
-        password: (( param "Set the uaaadmin db password" ))
-      databases:
-      - tag: cc
-        name: ccdb
-        citext: true
-      - tag: uaa
-        name: uaadb
-        citext: true
-      collect_statement_statistics: true
+      port: (( grab properties.databases.port ))
+      user: ccadmin
+      pass: (( grab properties.databases.roles.ccadmin.password ))
 
     blobstore_config:
       blobstore_type: webdav
-    nfs: ~
+      fog_connection: ~
+
+
+properties:
+  databases:
+    db_scheme: postgres
+    port: 5524
+    roles:
+    - tag: admin
+      name: ccadmin
+      password: (( param "Set the ccadmin db password" ))
+    - tag: admin
+      name: uaaadmin
+      password: (( param "Set the uaaadmin db password" ))
+    databases:
+    - tag: cc
+      name: ccdb
+      citext: true
+    - tag: uaa
+      name: uaadb
+      citext: true
+    collect_statement_statistics: true
+
+  nfs_server: ~

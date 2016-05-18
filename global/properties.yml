@@ -4,6 +4,7 @@ meta:
     base_domain: (( param "Enter the Cloud Foundry base domain" ))
     apps_domains: [ (( concat "run." meta.cf.base_domain )) ]
     system_domain: (( concat "system." meta.cf.base_domain ))
+    system_domain_organization: (( param "Set the org that will own the system domain" ))
     creds:
       admin:
         user: (( param "Set the Cloud Foundry Admin Username" ))
@@ -48,7 +49,7 @@ meta:
         ca_cert: (( grab properties.blobstore.tls.ca_cert ))
         password: (( grab meta.cf.creds.blobstore.pass ))
         private_endpoint: https://blobstore.service.cf.internal
-        public_endpoint: (( concat "http://blobstore." meta.cf.base_domain ))
+        public_endpoint: (( concat "http://blobstore." meta.cf.system_domain ))
         username: (( grab meta.cf.creds.blobstore.user ))
 
     ccdb:
@@ -324,9 +325,9 @@ properties:
     db_scheme: (( grab meta.cf.ccdb.scheme ))
     port: (( grab meta.cf.ccdb.port ))
     roles:
-    - name: ccadmin
+    - name: (( grab meta.cf.ccdb.user ))
       password: (( grab meta.cf.ccdb.pass ))
-      tag: (( grab meta.cf.ccdb.user ))
+      tag: admin
   collector: null
   consul:
     agent:
@@ -394,14 +395,12 @@ properties:
     enabled: true
   etcd:
     advertise_urls_dns_suffix: etcd.service.cf.internal
-    machines:
-    - (( grab meta.cf.etcd.servers ))
+    machines: (( grab meta.cf.etcd.servers ))
     peer_require_ssl: false
     require_ssl: false
   etcd_metrics_server:
     nats:
-      machines:
-      - (( grab meta.cf.nats.servers ))
+      machines: (( grab meta.cf.nats.servers ))
       password: (( grab meta.cf.nats.pass ))
       username: (( grab meta.cf.nats.user ))
   ha_proxy: null
@@ -418,8 +417,7 @@ properties:
     blacklisted_syslog_ranges: null
     debug: false
     etcd:
-      machines:
-      - (( grab meta.cf.etcd.servers ))
+      machines: (( grab meta.cf.etcd.servers ))
     maxRetainedLogMessages: 100
     outgoing_dropsonde_port: 8081
     tls:
@@ -436,7 +434,7 @@ properties:
     enabled: true
     invitations_enabled: null
     links:
-      passwd: (( concat "https://console." meta.cf.system_domain "/password_resets/new"
+      passwd: (( concat "https://console." meta.cf.system_domain "/password_resets/new" ))
       signup: (( concat "https://console." meta.cf.system_domain "/register" ))
     logout: null
     messages: null
@@ -468,8 +466,7 @@ properties:
     shared_secret: (( grab meta.cf.creds.loggregator.endpoint_secret ))
   nats:
     debug: false
-    machines:
-    - (( grab meta.cf.nats.servers ))
+    machines: (( grab meta.cf.nats.servers ))
     monitor_port: 4221
     password: (( grab meta.cf.nats.pass ))
     port: 4222
@@ -517,7 +514,7 @@ properties:
   support_address: http://support.cloudfoundry.com
   syslog_daemon_config: null
   system_domain: (( grab meta.cf.system_domain ))
-  system_domain_organization: null
+  system_domain_organization: (( grab meta.cf.system_domain_organization ))
   traffic_controller:
     disable_access_control: null
     outgoing_port: 8080
@@ -631,4 +628,4 @@ properties:
     roles:
     - name: uaaadmin
       password: (( grab meta.cf.uaadb.pass ))
-      tag: (( grab meta.cf.uaadb.user ))
+      tag: admin

@@ -14,73 +14,171 @@ meta:
 
 jobs:
 - name: consul_z1
+  instances: 1
+  .: (( inject meta.jobs.consul ))
   resource_pool: warden
   networks:
   - name: cf
-    static_ips: (( static_ips(13, 14, 15)  ))
+    static_ips: (( static_ips(52, 53, 54)  ))
+  properties:
+    metron_agent:
+      zone: z1
 - name: ha_proxy_z1
+  instances: 1
+  .: (( inject meta.jobs.ha_proxy ))
   resource_pool: warden
   networks:
   - name: cf
-    static_ips: (( static_ips(8) ))
+    static_ips: (( static_ips(32) ))
+  properties:
+    metron_agent:
+      zone: z1
+    ha_proxy:
+      ssl_pem: (( param "Set the haproxy SSL pem" ))
 - name: nats_z1
+  instances: 1
+  .: (( inject meta.jobs.nats ))
+  properties:
+    metron_agent:
+      zone: z1
   resource_pool: warden
   networks:
   - name: cf
-    static_ips: (( static_ips(1) ))
+    static_ips: (( static_ips(4) ))
 - name: etcd_z1
+  instances: 1
+  .: (( inject meta.jobs.etcd ))
+  properties:
+    metron_agent:
+      zone: z1
   resource_pool: warden
   networks:
   - name: cf
-    static_ips: (( static_ips(10, 11) ))
+    static_ips: (( static_ips(40, 41) ))
 - name: blobstore_z1
+  instances: 1
+  .: (( inject meta.jobs.blobstore ))
+  properties:
+    metron_agent:
+      zone: z1
   resource_pool: warden
   networks:
   - name: cf
 - name: postgres_z1
+  instances: 1
+  .: (( inject meta.jobs.postgres ))
+  properties:
+    metron_agent:
+      zone: z1
   resource_pool: warden
   networks:
   - name: cf
-    static_ips: (( static_ips(7) ))
+    static_ips: (( static_ips(28) ))
 - name: uaa_z1
+  instances: 1
+  .: (( inject meta.jobs.uaa ))
+  properties:
+    metron_agent:
+      zone: z1
   resource_pool: warden
   networks:
   - name: cf
 - name: api_z1
+  instances: 1
+  .: (( inject meta.jobs.api ))
+  properties:
+    metron_agent:
+      zone: z1
   resource_pool: warden
   networks:
   - name: cf
-- name: clock_z1
+- name: clock_global
+  instances: 1
+  .: (( inject meta.jobs.clock ))
+  properties:
+    metron_agent:
+      zone: z1
   resource_pool: warden
   networks:
   - name: cf
-- name: api_wprker_z1
+- name: api_worker_z1
+  instances: 1
+  .: (( inject meta.jobs.api_worker ))
+  properties:
+    metron_agent:
+      zone: z1
   resource_pool: warden
   networks:
   - name: cf
 - name: hm9000_z1
+  instances: 1
+  .: (( inject meta.jobs.hm9000 ))
+  properties:
+    metron_agent:
+      zone: z1
   resource_pool: warden
   networks:
   - name: cf
 - name: runner_z1
+  instances: 1
+  .: (( inject meta.jobs.runner ))
+  properties:
+    dea_next:
+      zone: z1
+    metron_agent:
+      zone: z1
   resource_pool: warden
   networks:
   - name: cf
-    static_ips: (( static_ips(6) ))
+    static_ips: (( static_ips(24) ))
 - name: loggregator_z1
+  instances: 1
+  .: (( inject meta.jobs.loggregator ))
+  properties:
+    doppler:
+      zone: z1
+    metron_agent:
+      zone: z1
   resource_pool: warden
   networks:
   - name: cf
 - name: doppler_z1
+  instances: 1
+  .: (( inject meta.jobs.doppler ))
+  properties:
+    doppler:
+      zone: z1
+    metron_agent:
+      zone: z1
   resource_pool: warden
   networks:
   - name: cf
-- name: trafficcontroller_z1
+- name: loggregator_trafficcontroller_z1
+  instances: 1
+  .: (( inject meta.jobs.trafficcontroller ))
+  properties:
+    metron_agent:
+      zone: z1
+    traffic_controller:
+      zone: z1
   resource_pool: warden
   networks:
   - name: cf
 - name: router_z1
+  instances: 1
+  .: (( inject meta.jobs.router ))
+  properties:
+    metron_agent:
+      zone: z1
   resource_pool: warden
   networks:
   - name: cf
-    static_ips: (( static_ips(5) ))
+    static_ips: (( static_ips(20) ))
+- name: acceptance_tests
+  networks:
+  - name: cf
+  resource_pool: warden
+- name: smoke_tests
+  networks:
+  - name: cf
+  resource_pool: warden

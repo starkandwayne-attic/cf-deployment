@@ -2,9 +2,10 @@
 resource_pools:
 - name: warden
   cloud_properties: {}
+  stemcell: (( grab meta.stemcell ))
 
 compilation:
   cloud_properties: {}
   workers: 6
-  network: cf1
+  network: cf
   reuse_compilation_vms: true
