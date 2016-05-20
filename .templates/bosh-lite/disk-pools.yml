@@ -1,2 +1,14 @@
 ---
-disk_pools: []
+disk_pools:
+- name: small
+  disk_size: 1024
+  cloud_properties: {}
+- name: medium
+  disk_size: 4096
+  cloud_properties: {}
+- name: large
+  disk_size: 10240
+  cloud_properties: {}
+- name: xlarge
+  disk_size: 102400
+  cloud_properties: {}

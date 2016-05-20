@@ -412,7 +412,8 @@ properties:
     server_cert: (( grab meta.cf.hm9000.server_cert ))
     server_key: (( grab meta.cf.hm9000.server_key ))
     url: (( concat "https://hm9000." meta.cf.system_domain ))
-  logger_endpoint: null
+  logger_endpoint:
+    port: (( param "What port is loggregator/websockets available on? (80, 443, 4443)" ))
   loggregator:
     blacklisted_syslog_ranges: null
     debug: false

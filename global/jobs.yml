@@ -2,7 +2,7 @@
 meta:
   jobs:
     consul:
-      persistent_disk: (( param "How much persistent disk does consul get?" ))
+      persistent_disk_pool: (( param "Specify the persistent disk pool for consul" ))
       properties:
         consul:
           agent:
@@ -37,7 +37,7 @@ meta:
         release: cf
       update: {}
     etcd:
-      persistent_disk: (( param "How much persistent disk does etcd get?" ))
+      persistent_disk_pool: (( param "Specify the persistent disk pool for etcd" ))
       templates:
       - name: etcd
         release: cf
@@ -56,7 +56,7 @@ meta:
         release: cf
       update: {}
     nfs:
-      persistent_disk: (( param "How much persistent disk does nfs get?" ))
+      persistent_disk_pool: (( param "Specify the persistent disk pool for nfs" ))
       templates:
       - name: consul_agent
         release: cf
@@ -94,6 +94,7 @@ meta:
       - name: route_registrar
         release: cf
       update: {}
+      persistent_disk_pool: (( param "Specify the persistent disk pool for blobstore" ))
       properties:
         consul:
           agent:
@@ -109,7 +110,7 @@ meta:
             uris:
             - (( concat "blobstore." meta.cf.system_domain ))
     postgres:
-      persistent_disk: (( param "How much persistent disk does postgres get?" ))
+      persistent_disk_pool: (( param "Specify the persistent disk pool for postgres" ))
       templates:
       - name: postgres
         release: cf

@@ -2,15 +2,15 @@
 meta:
   jobs:
     consul:
-      persistent_disk: 1024
+      persistent_disk_pool: small
     etcd:
-      persistent_disk: 10240
+      persistent_disk_pool: large
     nfs:
-      persistent_disk: 102400
+      persistent_disk_pool: ~ # not used
     blobstore:
-      persistent_disk: 102400
+      persistent_disk_pool: xlarge
     postgres:
-      persistent_disk: 4096
+      persistent_disk_pool: medium
 
 jobs:
 - name: consul_z1

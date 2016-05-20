@@ -1,50 +1,71 @@
 ---
+meta:
+  elbs: (( param "What elbs will be in front of the gorouters?" ))
+
 resource_pools:
-  - name: web
-    network: concourse
+  - name: errand
     stemcell: (( grab meta.stemcell ))
     cloud_properties:
-      instance_type: m3.medium
+      instance_type: t2.small
+      root_disk:
+        size: 8_000
+      ephemeral_disk:
+        size: 10_240
 
-  - name: discovery
-    network: concourse
+  - name: small
     stemcell: (( grab meta.stemcell ))
     cloud_properties:
-      instance_type: m3.medium
+      instance_type: t2.medium
+      root_disk:
+        size: 8_000
+      ephemeral_disk:
+        size: 10_240
 
-  - name: db
-    network: concourse
-    stemcell: (( grab meta.stemcell ))
-    cloud_properties:
-      instance_type: m3.medium
-
-  - name: workers
-    network: concourse
+  - name: medium
     stemcell: (( grab meta.stemcell ))
     cloud_properties:
       instance_type: m4.large
+      root_disk:
+        size: 8_000
+      ephemeral_disk:
+        size: 10_240
 
-  - name: haproxy
-    network: concourse
+  - name: large
     stemcell: (( grab meta.stemcell ))
     cloud_properties:
-      instance_type: m4.large
+      instance_type: m4.xlarge
+      root_disk:
+        size: 8_000
+      ephemeral_disk:
+        size: 40_960
+
+  - name: router
+    stemcell: (( grab meta.stemcell ))
+    cloud_properties:
+      instance_type: t2.medium
+      root_disk:
+        size: 8_000
+      ephemeral_disk:
+        size: 10_240
+      elbs: (( grab meta.elbs ))
+
+  - name: runner
+    stemcell: (( grab meta.stemcell ))
+    cloud_properties:
+      instance_type: m4.xlarge
+      root_disk:
+        size: 8_000
+      ephemeral_disk:
+        size: 102_400
+        type: gp2
 
 compilation:
   workers: 3
-  network: concourse
+  network: cf1
   reuse_compilation_vms: true
   cloud_properties:
-    instance_type: c4.large
-
-jobs:
-  - name: haproxy
-    resource_pool: haproxy
-  - name: discovery
-    resource_pool: discovery
-  - name: web
-    resource_pool: web
-  - name: db
-    resource_pool: db
-  - name: worker
-    resource_pool: workers
+    instance_type: c4.2xlarge
+    root_disk:
+      size: 8_000
+    ephemeral_disk:
+      size: 10_240

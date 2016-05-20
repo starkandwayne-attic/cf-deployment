@@ -50,3 +50,6 @@ properties:
     collect_statement_statistics: true
 
   nfs_server: ~
+
+  logger_endpoint:
+    port: 80
