@@ -1,0 +1,75 @@
+#!/bin/bash
+
+set -e
+
+function upload_to_vault {
+	path=$1
+	shift
+	file=$1
+	shift
+
+	cat ${depot_path}/${file} safe set ${VAULT_PREFIX}/certs/${path}
+	#| tr -s " " "|" safe set
+}
+
+function gen_cert {
+  name=$1
+  shift
+  certstrap --depot-path ${depot_path} request-cert --passphrase '' --common-name "${name}" --domain "${name},*.${name}" > /dev/null
+  certstrap --depot-path ${depot_path} sign "${name}" --CA ${CA}
+}
+
+if [[ -z $(which certstrap) ]]; then
+	echo "Retrieving certstrap utility"
+	go get -v github.com/square/certstrap >/dev/null
+fi
+
+CA=cf-ca
+depot_path="/tmp/cf_certs" #FIXME - use temp directory
+
+mkdir -p ${depot_path}
+trap "rm -rf ${depot_path}" QUIT TERM INT EXIT
+
+echo "Generating Cloud Foundry internal certs"
+certstrap --depot-path ${depot_path} init --passphrase '' --common-name ${CA} >/dev/null
+
+gen_cert consul_agent
+gen_cert server.dc1.cf.internal
+gen_cert dea_client
+gen_cert dea.service.cf.internal
+gen_cert clientName #etcd client
+gen_cert etcd.service.consul
+gen_cert hm9000_client
+gen_cert listener-hm9000.service.cf.internal
+gen_cert blobstore.service.cf.internal
+gen_cert uaa.service.cf.internal
+
+echo "Uploading Cloud Foundry internal certs to Vault"
+upload_to_vault internal_ca:cert cf-ca.crt
+
+upload_to_vault consul_client:key consul_agent.key
+upload_to_vault consul_client:cert consul_agent.crt
+upload_to_vault consul_server:key server.dc1.cf.internal.key
+upload_to_vault consul_server:cert server.dc1.cf.internal.crt
+
+upload_to_vault dea_client:key dea_client.key
+upload_to_vault dea_client:cert dea_client.crt
+upload_to_vault dea_server:key dea.service.cf.internal.key
+upload_to_vault dea_server:cert dea.service.cf.internal.crt
+
+upload_to_vault etcd_client:key clientName.key
+upload_to_vault etcd_client:cert clientName.crt
+upload_to_vault etcd_server:key etcd.service.consul.key
+upload_to_vault etcd_server:cert etcd.service.consul.crt
+
+upload_to_vault hm9000_client:key hm9000_client.key
+upload_to_vault hm9000_client:cert hm9000_client.crt
+upload_to_vault hm9000_server:key listener-hm9000.service.cf.internal.key
+upload_to_vault hm9000_server:cert listener-hm9000.service.cf.internal.key
+
+upload_to_vault blobstore:cert blobstore.service.cf.internal.crt
+upload_to_vault blobstore:key blobstore.service.cf.internal.key
+
+upload_to_vault uaa:cert uaa.service.cf.internal.crt
+upload_to_vault uaa:key uaa.service.cf.internal.key
+upload_to_vault uaa

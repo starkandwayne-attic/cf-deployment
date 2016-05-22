@@ -46,7 +46,7 @@ meta:
       fog_connection: (( param "Configure fog for the blobstore access, or nullify if not using" ))
       cdn: null
       webdav_config:
-        ca_cert: (( grab properties.blobstore.tls.ca_cert ))
+        ca_cert: (( vault meta.vault_prefix "/certs/internal_ca:cert" ))
         password: (( grab meta.cf.creds.blobstore.pass ))
         private_endpoint: https://blobstore.service.cf.internal
         public_endpoint: (( concat "http://blobstore." meta.cf.system_domain ))
@@ -61,25 +61,25 @@ meta:
 
     consul:
       servers: (( param "Specify which IPs are being used by consul servers" ))
-      agent_cert: (( param "Enter the Consul Agent SSL cert" ))
-      agent_key: (( param "Enter the Consul Agent SSL key" ))
-      server_cert: (( param "Enter the Consul Server SSL cert" ))
-      server_key: (( param "Enter the Consul Server SSL key" ))
-      ca_cert: (( param "Enter the CA cert used with the consul SSL certs/keys" ))
+      agent_cert: (( vault meta.vault_prefix "/certs/consul_client:cert" ))
+      agent_key: (( vault meta.vault_prefix "/certs/consul_client:key" ))
+      server_cert: (( vault meta.vault_prefix "/certs/consul_server:cert" ))
+      server_key: (( vault meta.vault_prefix "/certs/consul_server:key" ))
+      ca_cert: (( vault meta.vault_prefix "/certs/internal_ca:cert" ))
       encryption_key: (( param "Enter a phrase to be converted to an encryption key for the consul gossip protocol" ))
 
     dea:
-      client_cert: (( param "Enter the DEA client SSL cert" ))
-      client_key: (( param "Enter the DEA client SSL key" ))
-      ca_cert: (( param "Enter the DEA CA cert" ))
-      server_cert: (( param "Enter the DEA server SSL cert" ))
-      server_key: (( param "Enter the DEA server SSL key" ))
+      client_cert: (( vault meta.vault_prefix "/certs/dea_client:cert" ))
+      client_key: (( vault meta.vault_prefix "/certs/dea_client:key" ))
+      ca_cert: (( vault meta.vault_prefix "/certs/internal_ca:cert" ))
+      server_cert: (( vault meta.vault_prefix "/certs/dea_server:cert" ))
+      server_key: (( vault meta.vault_prefix "/certs/dea_server:key" ))
     hm9000:
-      client_cert: (( param "Enter the HM9000 client SSL cert" ))
-      client_key: (( param "Enter the HM9000 client SSL key" ))
-      ca_cert: (( param "Enter the HM9000 CA cert" ))
-      server_cert: (( param "Enter the HM9000 server SSL cert" ))
-      server_key: (( param "Enter the HM9000 server SSL key" ))
+      client_cert: (( vault meta.vault_prefix "/certs/hm9000_client:cert" ))
+      client_key: (( vault meta.vault_prefix "/certs/hm9000_client:key" ))
+      ca_cert: (( vault meta.vault_prefix "/certs/internal_ca:cert" ))
+      server_cert: (( vault meta.vault_prefix "/certs/hm9000_server:cert" ))
+      server_key: (( vault meta.vault_prefix "/certs/hm9000_server:key" ))
     gorouter:
       servers: (( param "Enter the IPs of the gorouters" ))
     etcd:
@@ -123,10 +123,10 @@ properties:
     secure_link:
       secret: (( grab meta.cf.creds.blobstore.secret ))
     tls:
-      ca_cert: (( param "Specify the CA cert for the blobstore" ))
-      cert: (( param "Specify the SSL cert for the blobstore" ))
+      ca_cert: (( vault meta.vault_prefix "/certs/internal_ca:cert" ))
+      cert: (( vault meta.vault_prefix "/certs/blobstore:cert" ))
       port: 443
-      private_key: (( param "Specify the SSL key for the blobstore" ))
+      private_key: (( vault meta.vault_prefix "/certs/blobstore:key" ))
   cc:
     allow_app_ssh_access: true
     allowed_cors_domains: []
