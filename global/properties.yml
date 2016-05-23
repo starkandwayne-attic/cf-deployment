@@ -7,39 +7,36 @@ meta:
     system_domain_organization: (( param "Set the org that will own the system domain" ))
     creds:
       admin:
-        user: (( param "Set the Cloud Foundry Admin Username" ))
-        pass: (( param "Set a password for the Cloud Foundry Admin User" ))
+        user: admin
+        pass: (( vault meta.vault_prefix "/creds/users/admin:password" ))
       blobstore:
-        user: (( param "Set the blobstore webdav (basic authentication) user" ))
-        pass: (( param "Set the blobstore webdav user's password" ))
-        secret: (( param "Set the secret with which the blobstore will sign secure URLs" ))
+        user: blobstore
+        pass: (( vault meta.vault_prefix "/creds/blobstore:webdav_password" ))
+        secret: (( vault meta.vault_prefix "/creds/blobstore:secret" ))
       cc:
-        bulk_api_user: (( param "Set the user for the bulk api" ))
-        bulk_api_password: (( param "Set the password for the bulk API user" ))
-        internal_api_user: (( param "Set the user for the internal api" ))
-        internal_api_password: (( param "Set the password for the internal ap useri" ))
-        staging_upload_user: (( param "Set the user for the staging API" ))
-        staging_upload_password: (( param "Set the password for the staging API user" ))
-        db_encryption_key: (( param "Set the DB encryption key" ))
+        bulk_api_user: bulk_api_user
+        bulk_api_password: (( vault meta.vault_prefix "/creds/cc:bulk_api" ))
+        internal_api_user: internal_api_user
+        internal_api_password: (( vault meta.vault_prefix "/creds/cc:internal_api" ))
+        staging_upload_user: staging_upload_user
+        staging_upload_password: (( vault meta.vault_prefix "/creds/cc:staging_upload" ))
+        db_encryption_key: (( vault meta.vault_prefix "/creds/cc:db_encryption_key" ))
       loggregator:
-        endpoint_secret: (( param "Set the shared secret to be used for securing the loggregator endpoint" ))
+        endpoint_secret: (( vault meta.vault_prefix "/creds/loggregator:endpoint_secret" ))
       gorouter:
-        route_svcs_secret: (( param "Set the secret for use with route services" ))
-        status_user: (( param "Set the username to secure the gourouter varz/status endpoint" ))
-        status_pass: (( param "Set the password for the gorouter status user" ))
+        route_svcs_secret: (( vault meta.vault_prefix "/creds/gorouter:route_svcs_secret" ))
+        status_user: health
+        status_pass: (( vault meta.vault_prefix "/creds/gorouter:status_api_pass" ))
       uaa:
-        admin_client_secret: (( param "Set the admin client secret for the UAA" ))
-        cc_client_secret: (( param "Set the cloud controller UAA client secret" ))
-        cc_broker_secret: (( param "Set the cloud controller broker UAA client secret" ))
-        cc_routing_secret: (( param "Set the cloud controller routing UAA client secret" ))
-        cc_user_lookup_secret: (( param "Set the cloud controller user lookup secret" ))
-        doppler_secret: (( param "Set the doppler UAA client secret" ))
-        gorouter_secret: (( param "Set the gorouter UAA client secret" ))
-        login_secret: (( param "Set the login server's UAA client secret" ))
-        notifications_secret: (( param "Set the notifications service UAA client secret" ))
-        ssh_proxy_secret: (( param "Set the ssh_proxy UAA secret" ))
-        tcp_emitter_secret: (( param "Set the tcp emitter UAA secret" ))
-        tcp_router_secret: (( param "Set the tcp router UAA secret" ))
+        admin_client_secret: (( vault meta.vault_prefix "/creds/uaa/secrets:admin_client" ))
+        cc_client_secret: (( vault meta.vault_prefix "/creds/uaa/secrets:cc_client" ))
+        cc_broker_secret: (( vault meta.vault_prefix "/creds/uaa/secrets:cc_broker" ))
+        cc_routing_secret: (( vault meta.vault_prefix "/creds/uaa/secrets:cc_routing" ))
+        login_secret: (( vault meta.vault_prefix "/creds/uaa/secrets:login" ))
+        notifications_secret: (( vault meta.vault_prefix "/creds/uaa/secrets:notifications" ))
+        ssh_proxy_secret: (( vault meta.vault_prefix "/creds/uaa/secrets:ssh_proxy" ))
+        tcp_emitter_secret: (( vault meta.vault_prefix "/creds/uaa/secrets:tcp_emitter" ))
+        tcp_router_secret: (( vault meta.vault_prefix "/creds/uaa/secrets:tcp_router" ))
 
     blobstore_config:
       blobstore_type: (( param "Set the blobstore type (webdav or fog)" ))
@@ -66,7 +63,7 @@ meta:
       server_cert: (( vault meta.vault_prefix "/certs/consul_server:cert" ))
       server_key: (( vault meta.vault_prefix "/certs/consul_server:key" ))
       ca_cert: (( vault meta.vault_prefix "/certs/internal_ca:cert" ))
-      encryption_key: (( param "Enter a phrase to be converted to an encryption key for the consul gossip protocol" ))
+      encryption_key: (( vault meta.vault_prefix "/creds/cc: db_encryption_key" ))
 
     dea:
       client_cert: (( vault meta.vault_prefix "/certs/dea_client:cert" ))
@@ -86,13 +83,13 @@ meta:
       servers: (( param "Enter the IPs of the etcd servers" ))
     nats:
       servers: (( param "Enter the IPs of the nats servers" ))
-      user: (( param "Set the username to connect to nats" ))
-      pass: (( param "Set the password for the nats user" ))
+      user: nats_user
+      pass: (( vault meta.vault_prefix "/creds/nats:password" ))
     uaa:
-      jwt_private_key: (( param "Enter the private key for use with signing JWT messages in the UAA" ))
-      jwt_public_key: (( param "Enter the public key for the JWT Private Key" ))
-      ssl_cert: (( param "Enter the SSL cert for the UAA" ))
-      ssl_key: (( param "Enter the SSL key for the UAA" ))
+      jwt_private_key: (( vault meta.vault_prefix "/jwt_signing_key:private" ))
+      jwt_public_key: (( vault meta.vault_prefix "/jwt_signing_key:public" ))
+      ssl_cert: (( vault meta.vault_prefix "/uaa:public" ))
+      ssl_key: (( vault meta.vault_prefix "/uaa:private" ))
     uaadb:
       host: (( param "What hostname/IP is the uaadb available at?" ))
       port: (( param "What port is the uaadb listening on?" ))
