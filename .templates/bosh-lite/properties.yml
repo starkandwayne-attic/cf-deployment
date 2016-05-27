@@ -1,6 +1,9 @@
 ---
 meta:
   cf:
+    base_domain: bosh-lite.com # override this if non-traditional bosh-lite
+    system_domain_organization: system
+
     consul:
       servers: (( grab jobs.consul_z1.networks.cf.static_ips ))
     gorouter:
@@ -36,10 +39,10 @@ properties:
     roles:
     - tag: admin
       name: ccadmin
-      password: (( param "Set the ccadmin db password" ))
+      password: (( vault meta.vault_prefix "/creds/db:ccadmin" ))
     - tag: admin
       name: uaaadmin
-      password: (( param "Set the uaaadmin db password" ))
+      password: (( vault meta.vault_prefix "/creds/db:uaaadmin" ))
     databases:
     - tag: cc
       name: ccdb

@@ -32,7 +32,10 @@ meta:
         cc_client_secret: (( vault meta.vault_prefix "/creds/uaa/secrets:cc_client" ))
         cc_broker_secret: (( vault meta.vault_prefix "/creds/uaa/secrets:cc_broker" ))
         cc_routing_secret: (( vault meta.vault_prefix "/creds/uaa/secrets:cc_routing" ))
+        cc_user_lookup_secret: (( vault meta.vault_prefix "/creds/uaa/secrets:cc_user_lookup" ))
         login_secret: (( vault meta.vault_prefix "/creds/uaa/secrets:login" ))
+        doppler_secret: (( vault meta.vault_prefix "/creds/uaa/secrets:doppler" ))
+        gorouter_secret: (( vault meta.vault_prefix "/creds/uaa/secrets:gorouter" ))
         notifications_secret: (( vault meta.vault_prefix "/creds/uaa/secrets:notifications" ))
         ssh_proxy_secret: (( vault meta.vault_prefix "/creds/uaa/secrets:ssh_proxy" ))
         tcp_emitter_secret: (( vault meta.vault_prefix "/creds/uaa/secrets:tcp_emitter" ))
@@ -63,7 +66,7 @@ meta:
       server_cert: (( vault meta.vault_prefix "/certs/consul_server:cert" ))
       server_key: (( vault meta.vault_prefix "/certs/consul_server:key" ))
       ca_cert: (( vault meta.vault_prefix "/certs/internal_ca:cert" ))
-      encryption_key: (( vault meta.vault_prefix "/creds/cc: db_encryption_key" ))
+      encryption_key: (( vault meta.vault_prefix "/creds/cc:db_encryption_key" ))
 
     dea:
       client_cert: (( vault meta.vault_prefix "/certs/dea_client:cert" ))
@@ -88,8 +91,8 @@ meta:
     uaa:
       jwt_private_key: (( vault meta.vault_prefix "/jwt_signing_key:private" ))
       jwt_public_key: (( vault meta.vault_prefix "/jwt_signing_key:public" ))
-      ssl_cert: (( vault meta.vault_prefix "/uaa:public" ))
-      ssl_key: (( vault meta.vault_prefix "/uaa:private" ))
+      ssl_cert: (( vault meta.vault_prefix "/certs/uaa:cert" ))
+      ssl_key: (( vault meta.vault_prefix "/certs/uaa:key" ))
     uaadb:
       host: (( param "What hostname/IP is the uaadb available at?" ))
       port: (( param "What port is the uaadb listening on?" ))
@@ -110,7 +113,7 @@ properties:
     use_http: true
   app_domains: (( grab meta.cf.apps_domains ))
   app_ssh:
-    host_key_fingerprint: (( param "Generate an SSH host key for app ssh to use" ))
+    host_key_fingerprint: (( vault meta.vault_prefix "/app_ssh:fingerprint" ))
     oauth_client_id: ssh-proxy
   blobstore:
     admin_users:

@@ -8,15 +8,16 @@ function upload_to_vault {
 	file=$1
 	shift
 
-	cat ${depot_path}/${file} safe set ${VAULT_PREFIX}/certs/${path}
-	#| tr -s " " "|" safe set
+	safe import >/dev/null <<EOF
+{"${VAULT_PREFIX}/certs/${path}":{"key":"$(cat ${depot_path}/${file}.key | perl -pe 's/\n/\\n/am')","cert":"$(cat ${depot_path}/${file}.crt | perl -pe 's/\n/\\n/am')"}}
+EOF
 }
 
 function gen_cert {
   name=$1
   shift
   certstrap --depot-path ${depot_path} request-cert --passphrase '' --common-name "${name}" --domain "${name},*.${name}" > /dev/null
-  certstrap --depot-path ${depot_path} sign "${name}" --CA ${CA}
+  certstrap --depot-path ${depot_path} sign "${name}" --CA ${CA} > /dev/null
 }
 
 if [[ -z $(which certstrap) ]]; then
@@ -45,31 +46,20 @@ gen_cert blobstore.service.cf.internal
 gen_cert uaa.service.cf.internal
 
 echo "Uploading Cloud Foundry internal certs to Vault"
-upload_to_vault internal_ca:cert cf-ca.crt
+upload_to_vault internal_ca cf-ca
 
-upload_to_vault consul_client:key consul_agent.key
-upload_to_vault consul_client:cert consul_agent.crt
-upload_to_vault consul_server:key server.dc1.cf.internal.key
-upload_to_vault consul_server:cert server.dc1.cf.internal.crt
+upload_to_vault consul_client consul_agent
+upload_to_vault consul_server server.dc1.cf.internal
 
-upload_to_vault dea_client:key dea_client.key
-upload_to_vault dea_client:cert dea_client.crt
-upload_to_vault dea_server:key dea.service.cf.internal.key
-upload_to_vault dea_server:cert dea.service.cf.internal.crt
+upload_to_vault dea_client dea_client
+upload_to_vault dea_server dea.service.cf.internal
 
-upload_to_vault etcd_client:key clientName.key
-upload_to_vault etcd_client:cert clientName.crt
-upload_to_vault etcd_server:key etcd.service.consul.key
-upload_to_vault etcd_server:cert etcd.service.consul.crt
+upload_to_vault etcd_client clientName
+upload_to_vault etcd_server etcd.service.consul
 
-upload_to_vault hm9000_client:key hm9000_client.key
-upload_to_vault hm9000_client:cert hm9000_client.crt
-upload_to_vault hm9000_server:key listener-hm9000.service.cf.internal.key
-upload_to_vault hm9000_server:cert listener-hm9000.service.cf.internal.key
+upload_to_vault hm9000_client hm9000_client
+upload_to_vault hm9000_server listener-hm9000.service.cf.internal
 
-upload_to_vault blobstore:cert blobstore.service.cf.internal.crt
-upload_to_vault blobstore:key blobstore.service.cf.internal.key
+upload_to_vault blobstore blobstore.service.cf.internal
 
-upload_to_vault uaa:cert uaa.service.cf.internal.crt
-upload_to_vault uaa:key uaa.service.cf.internal.key
-upload_to_vault uaa
+upload_to_vault uaa uaa.service.cf.internal
