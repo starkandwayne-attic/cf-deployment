@@ -11,6 +11,9 @@ resource_pools:
         size: 8_000
       ephemeral_disk:
         size: 10_240
+    env:
+      bosh:
+        password: (( grab meta.vcap_password ))
 
   - name: small
     stemcell: (( grab meta.stemcell ))
@@ -20,6 +23,9 @@ resource_pools:
         size: 8_000
       ephemeral_disk:
         size: 10_240
+    env:
+      bosh:
+        password: (( grab meta.vcap_password ))
 
   - name: medium
     stemcell: (( grab meta.stemcell ))
@@ -29,6 +35,9 @@ resource_pools:
         size: 8_000
       ephemeral_disk:
         size: 10_240
+    env:
+      bosh:
+        password: (( grab meta.vcap_password ))
 
   - name: large
     stemcell: (( grab meta.stemcell ))
@@ -38,6 +47,9 @@ resource_pools:
         size: 8_000
       ephemeral_disk:
         size: 40_960
+    env:
+      bosh:
+        password: (( grab meta.vcap_password ))
 
   - name: router
     stemcell: (( grab meta.stemcell ))
@@ -48,6 +60,9 @@ resource_pools:
       ephemeral_disk:
         size: 10_240
       elbs: (( grab meta.elbs ))
+    env:
+      bosh:
+        password: (( grab meta.vcap_password ))
 
   - name: runner
     stemcell: (( grab meta.stemcell ))
@@ -58,6 +73,9 @@ resource_pools:
       ephemeral_disk:
         size: 102_400
         type: gp2
+    env:
+      bosh:
+        password: (( grab meta.vcap_password ))
 
 compilation:
   workers: 3
