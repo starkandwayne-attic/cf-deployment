@@ -1,6 +1,5 @@
 ---
 meta:
-  vcap_password: (( vault meta.vault_prefix "/vcap_user:crypt" ))
   cf:
     base_domain: (( param "Enter the Cloud Foundry base domain" ))
     apps_domains: [ (( concat "run." meta.cf.base_domain )) ]

@@ -3,9 +3,6 @@ resource_pools:
 - name: warden
   cloud_properties: {}
   stemcell: (( grab meta.stemcell ))
-  env:
-    bosh:
-      password: (( grab meta.vcap_password ))
 
 compilation:
   cloud_properties: {}

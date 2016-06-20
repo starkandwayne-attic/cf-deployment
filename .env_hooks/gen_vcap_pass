@@ -1,7 +1,0 @@
-#!/bin/bash
-
-set -e
-
-echo "Generating a random password for the vcap user"
-safe gen ${VAULT_PREFIX}/vcap_user password -- \
-     fmt crypt-sha512 ${VAULT_PREFIX}/vcap_user password crypt
