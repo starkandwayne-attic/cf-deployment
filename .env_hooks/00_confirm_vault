@@ -1,0 +1,14 @@
+#!/bin/bash
+
+
+if [[ ! -f ${HOME}/.saferc ]]; then
+	echo "No .saferc found. Please connect to a working Vault installation."
+	exit 1
+fi
+
+safe targets
+read -p "Use this target?  [yes or no] " YESNO
+if [[ ${YESNO} != "yes" ]]; then
+  echo "ABORTING..."
+  exit 1
+fi
