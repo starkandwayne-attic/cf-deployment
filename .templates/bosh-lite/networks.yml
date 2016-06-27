@@ -1,4 +1,24 @@
 ---
 networks:
 - name: cf
-  subnets: (( param "Specify the subnet to use for CF" ))
+  subnets:
+  - gateway: 10.244.0.1
+    range: 10.244.0.0/24
+    static:
+    - 10.244.0.2 - 10.244.0.100
+
+properties:
+  cc:
+    security_group_definitions:
+    - name: services
+      rules:
+      - destination: 10.244.0.0 - 10.244.1.255
+        protocol: all
+    - name: load_balancer
+      rules:
+      - destination: 10.244.0.34
+        protocol: all
+    - name: user_bosh_deployments
+      rules:
+      - destination: 10.244.0.0 - 10.244.255.255
+        protocol: all
