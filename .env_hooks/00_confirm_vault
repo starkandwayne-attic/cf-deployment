@@ -7,8 +7,8 @@ if [[ ! -f ${HOME}/.saferc ]]; then
 fi
 
 safe targets
-read -p "Use this target?  [yes or no] " YESNO
-if [[ ${YESNO} != "yes" ]]; then
+read -p "Use this Vault for storing deployment credentials?  [yes or no] " YESNO
+if [[ ${YESNO} != "yes" && ${YESNO} != "y" ]]; then
   echo "ABORTING..."
   exit 1
 fi
