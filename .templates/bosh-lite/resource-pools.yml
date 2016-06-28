@@ -1,6 +1,7 @@
 ---
 resource_pools:
 - name: warden
+  network: cf
   cloud_properties: {}
   stemcell: (( grab meta.stemcell ))
 
