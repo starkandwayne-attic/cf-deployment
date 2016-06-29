@@ -381,7 +381,7 @@ properties:
     debug: false
     maxRetainedLogMessages: 100
     message_drain_buffer_size: null
-    port: 4443
+    port: 443
     tls:
       enable: null
       port: null
@@ -413,7 +413,7 @@ properties:
     server_key: (( grab meta.cf.hm9000.server_key ))
     url: (( concat "https://hm9000." meta.cf.system_domain ))
   logger_endpoint:
-    port: (( param "What port is loggregator/websockets available on? (80, 443, 4443)" ))
+    port: 443
   loggregator:
     blacklisted_syslog_ranges: null
     debug: false
