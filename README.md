@@ -8,10 +8,10 @@ Creating a new Cloud Foundry Deployment
 ======================================
 
 To create a new [Genesis][1] based deployment of Cloud Foundry, run
-`genesis new deployment --template Cloud Foundry`. This will create a new repo
-called `Cloud Foundry-deployments` for you, and pull in the
+`genesis new deployment --template cf`. This will create a new repo
+called `cf-deployments` for you, and pull in the
 `github.com/starkandwayne/Cloud Foundry-deployment` repo as the `upstream` remote,
-copying the contents of `global/*` into the new `Cloud Foundry-deployments` repo.
+copying the contents of `global/*` into the new `cf-deployments` repo.
 
 This allows you to easily diverge from the upstream templates to suit your
 environment, and while also being able to pull in changes from upstream down
