@@ -3,10 +3,6 @@ meta:
   dns: (( param "Enter the DNS server for your VPC" ))
   security_groups: (( param "Enter the security groups which should be applied to CF VMs" ))
   router_security_groups: (( param "Enter the security groups which should be applied to the gorouter VMs" ))
-  azs:
-    z1: (( param "What availability zone should the *_z1 vms be placed in?" ))
-    z2: (( param "What availability zone should the *_z2 vms be placed in?" ))
-    z3: (( param "What availability zone should the *_z3 vms be placed in?" ))
 
 networks:
 - name: cf1
@@ -18,7 +14,6 @@ networks:
     static: (( param "Enter the static IP ranges for this subnet" ))
     reserved: (( param "Enter the reserved IP ranges for this subnet" ))
     cloud_properties:
-      availability_zone: (( grab meta.azs.z1 ))
       security_groups: (( grab meta.security_groups ))
       subnet: (( param "Enter the AWS subnet ID for this subnet" ))
 - name: cf2
@@ -30,7 +25,6 @@ networks:
     static: (( param "Enter the static IP ranges for this subnet" ))
     reserved: (( param "Enter the reserved IP ranges for this subnet" ))
     cloud_properties:
-      availability_zone: (( grab meta.azs.z2 ))
       security_groups: (( grab meta.security_groups ))
       subnet: (( param "Enter the AWS subnet ID for this subnet" ))
 - name: cf3
@@ -42,7 +36,6 @@ networks:
     static: (( param "Enter the static IP ranges for this subnet" ))
     reserved: (( param "Enter the reserved IP ranges for this subnet" ))
     cloud_properties:
-      availability_zone: (( grab meta.azs.z3 ))
       security_groups: (( grab meta.security_groups ))
       subnet: (( param "Enter the AWS subnet ID for this subnet" ))
 - name: router1
@@ -54,7 +47,6 @@ networks:
     static: (( param "Enter the static IP ranges for this subnet" ))
     reserved: (( param "Enter the reserved IP ranges for this subnet" ))
     cloud_properties:
-      availability_zone: (( grab meta.azs.z1 ))
       security_groups: (( grab meta.router_security_groups ))
       subnet: (( param "Enter the AWS subnet ID for this subnet" ))
 - name: router2
@@ -66,6 +58,5 @@ networks:
     static: (( param "Enter the static IP ranges for this subnet" ))
     reserved: (( param "Enter the reserved IP ranges for this subnet" ))
     cloud_properties:
-      availability_zone: (( grab meta.azs.z2 ))
       security_groups: (( grab meta.router_security_groups ))
       subnet: (( param "Enter the AWS subnet ID for this subnet" ))

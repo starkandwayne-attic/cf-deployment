@@ -19,7 +19,7 @@ jobs:
   networks:
   - name: cf1
     static_ips: (( static_ips(11, 12, 13, 14, 15) ))
-  resource_pool: small
+  resource_pool: small_z1
   properties:
     metron_agent:
       zone: z1
@@ -29,7 +29,7 @@ jobs:
   networks:
   - name: cf2
     static_ips: (( static_ips(11, 12, 13, 14, 15) ))
-  resource_pool: small
+  resource_pool: small_z2
   properties:
     metron_agent:
       zone: z2
@@ -39,7 +39,7 @@ jobs:
   networks:
   - name: cf3
     static_ips: (( static_ips(11, 12, 13, 14, 15) ))
-  resource_pool: small
+  resource_pool: small_z3
   properties:
     metron_agent:
       zone: z3
@@ -52,7 +52,7 @@ jobs:
   properties:
     metron_agent:
       zone: z1
-  resource_pool: small
+  resource_pool: small_z1
 - name: nats_z2
   instances: 1
   .: (( inject meta.jobs.nats ))
@@ -62,7 +62,7 @@ jobs:
   properties:
     metron_agent:
       zone: z2
-  resource_pool: small
+  resource_pool: small_z2
 - name: etcd_z1
   instances: 1
   .: (( inject meta.jobs.etcd ))
@@ -72,7 +72,7 @@ jobs:
   properties:
     metron_agent:
       zone: z1
-  resource_pool: small
+  resource_pool: small_z1
 - name: etcd_z2
   instances: 1
   .: (( inject meta.jobs.etcd ))
@@ -82,7 +82,7 @@ jobs:
   properties:
     metron_agent:
       zone: z2
-  resource_pool: small
+  resource_pool: small_z2
 - name: etcd_z3
   instances: 1
   .: (( inject meta.jobs.etcd ))
@@ -92,7 +92,7 @@ jobs:
   properties:
     metron_agent:
       zone: z3
-  resource_pool: small
+  resource_pool: small_z3
 - name: uaa_z1
   instances: 1
   .: (( inject meta.jobs.uaa ))
@@ -101,7 +101,7 @@ jobs:
   properties:
     metron_agent:
       zone: z1
-  resource_pool: small
+  resource_pool: small_z1
 - name: uaa_z2
   instances: 1
   .: (( inject meta.jobs.uaa ))
@@ -110,7 +110,7 @@ jobs:
   properties:
     metron_agent:
       zone: z2
-  resource_pool: small
+  resource_pool: small_z2
 - name: api_z1
   instances: 1
   .: (( inject meta.jobs.api ))
@@ -119,7 +119,7 @@ jobs:
   properties:
     metron_agent:
       zone: z1
-  resource_pool: small
+  resource_pool: small_z1
 - name: api_z2
   instances: 1
   .: (( inject meta.jobs.api ))
@@ -128,7 +128,7 @@ jobs:
   properties:
     metron_agent:
       zone: z2
-  resource_pool: small
+  resource_pool: small_z2
 - name: api_worker_z1
   instances: 1
   .: (( inject meta.jobs.api_worker ))
@@ -137,7 +137,7 @@ jobs:
   properties:
     metron_agent:
       zone: z1
-  resource_pool: small
+  resource_pool: small_z1
 - name: api_worker_z2
   instances: 1
   .: (( inject meta.jobs.api_worker ))
@@ -146,7 +146,7 @@ jobs:
   properties:
     metron_agent:
       zone: z2
-  resource_pool: small
+  resource_pool: small_z2
 - name: clock_global
   instances: 1
   .: (( inject meta.jobs.clock ))
@@ -155,7 +155,7 @@ jobs:
   properties:
     metron_agent:
       zone: z1
-  resource_pool: small
+  resource_pool: small_z1
 - name: stats
   instances: 1
   .: (( inject meta.jobs.stats ))
@@ -164,7 +164,7 @@ jobs:
   properties:
     metron_agent:
       zone: z1
-  resource_pool: small
+  resource_pool: small_z1
 - name: hm9000_z1
   instances: 1
   .: (( inject meta.jobs.hm9000 ))
@@ -173,7 +173,7 @@ jobs:
   properties:
     metron_agent:
       zone: z1
-  resource_pool: small
+  resource_pool: small_z1
 - name: hm9000_z2
   instances: 1
   .: (( inject meta.jobs.hm9000 ))
@@ -182,7 +182,7 @@ jobs:
   properties:
     metron_agent:
       zone: z2
-  resource_pool: small
+  resource_pool: small_z2
 - name: runner_z1
   instances: 1
   .: (( inject meta.jobs.runner ))
@@ -192,8 +192,8 @@ jobs:
     metron_agent:
       zone: z1
     dea_next:
-      zone: z2
-  resource_pool: runner
+      zone: z1
+  resource_pool: runner_z1
 - name: runner_z2
   instances: 1
   .: (( inject meta.jobs.runner ))
@@ -204,7 +204,7 @@ jobs:
       zone: z2
     dea_next:
       zone: z2
-  resource_pool: runner
+  resource_pool: runner_z2
 - name: loggregator_z1
   instances: 1
   .: (( inject meta.jobs.loggregator ))
@@ -215,7 +215,7 @@ jobs:
       zone: z1
     doppler:
       zone: z1
-  resource_pool: small
+  resource_pool: small_z1
 - name: loggregator_z2
   instances: 1
   .: (( inject meta.jobs.loggregator ))
@@ -226,7 +226,7 @@ jobs:
       zone: z2
     doppler:
       zone: z2
-  resource_pool: small
+  resource_pool: small_z2
 - name: doppler_z1
   instances: 1
   .: (( inject meta.jobs.doppler ))
@@ -237,7 +237,7 @@ jobs:
       zone: z1
     doppler:
       zone: z1
-  resource_pool: small
+  resource_pool: small_z1
 - name: doppler_z2
   instances: 1
   .: (( inject meta.jobs.doppler ))
@@ -248,7 +248,7 @@ jobs:
       zone: z2
     doppler:
       zone: z2
-  resource_pool: small
+  resource_pool: small_z2
 - name: loggregator_trafficcontroller_z1
   instances: 1
   .: (( inject meta.jobs.trafficcontroller ))
@@ -259,7 +259,7 @@ jobs:
       zone: z1
     traffic_controller:
       zone: z1
-  resource_pool: small
+  resource_pool: small_z1
 - name: loggregator_trafficcontroller_z2
   instances: 1
   .: (( inject meta.jobs.trafficcontroller ))
@@ -270,7 +270,7 @@ jobs:
       zone: z2
     traffic_controller:
       zone: z2
-  resource_pool: small
+  resource_pool: small_z2
 - name: router_z1
   instances: 1
   .: (( inject meta.jobs.router ))
@@ -280,7 +280,7 @@ jobs:
   properties:
     metron_agent:
       zone: z1
-  resource_pool: router
+  resource_pool: router_z1
 - name: router_z2
   instances: 1
   .: (( inject meta.jobs.router ))
@@ -290,7 +290,7 @@ jobs:
   properties:
     metron_agent:
       zone: z2
-  resource_pool: router
+  resource_pool: router_z2
 - name: acceptance_tests
   networks:
   - name: cf1

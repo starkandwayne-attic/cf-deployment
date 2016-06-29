@@ -1,63 +1,130 @@
 ---
 meta:
   elbs: (( param "What elbs will be in front of the gorouters?" ))
+  azs:
+    z1: (( param "What availability zone should the *_z1 vms be placed in?" ))
+    z2: (( param "What availability zone should the *_z2 vms be placed in?" ))
+    z3: (( param "What availability zone should the *_z3 vms be placed in?" ))
+
+  resource_pools:
+    small:
+      stemcell: (( grab meta.stemcell ))
+      cloud_properties:
+        instance_type: t2.medium
+        root_disk:
+          size: 8_000
+        ephemeral_disk:
+          size: 10_240
+    medium:
+      stemcell: (( grab meta.stemcell ))
+      cloud_properties:
+        instance_type: m4.large
+        root_disk:
+          size: 8_000
+        ephemeral_disk:
+          size: 10_240
+    large:
+      stemcell: (( grab meta.stemcell ))
+      cloud_properties:
+        instance_type: m4.xlarge
+        root_disk:
+          size: 8_000
+        ephemeral_disk:
+          size: 40_960
+    router:
+      stemcell: (( grab meta.stemcell ))
+      cloud_properties:
+        instance_type: t2.medium
+        root_disk:
+          size: 8_000
+        ephemeral_disk:
+          size: 10_240
+        elbs: (( grab meta.elbs ))
+    runner:
+      stemcell: (( grab meta.stemcell ))
+      cloud_properties:
+        instance_type: m4.xlarge
+        root_disk:
+          size: 8_000
+        ephemeral_disk:
+          size: 102_400
+          type: gp2
 
 resource_pools:
   - name: errand
     stemcell: (( grab meta.stemcell ))
     cloud_properties:
+      availability_zone: (( grab meta.azs.z1 ))
       instance_type: t2.small
       root_disk:
         size: 8_000
       ephemeral_disk:
         size: 10_240
 
-  - name: small
-    stemcell: (( grab meta.stemcell ))
+  - name: small_z1
+    .: (( inject meta.resource_pools.small ))
     cloud_properties:
-      instance_type: t2.medium
-      root_disk:
-        size: 8_000
-      ephemeral_disk:
-        size: 10_240
+      availability_zone: (( grab meta.azs.z1 ))
+  - name: small_z2
+    .: (( inject meta.resource_pools.small ))
+    cloud_properties:
+      availability_zone: (( grab meta.azs.z2 ))
+  - name: small_z3
+    .: (( inject meta.resource_pools.small ))
+    cloud_properties:
+      availability_zone: (( grab meta.azs.z3 ))
 
-  - name: medium
-    stemcell: (( grab meta.stemcell ))
+  - name: medium_z1
+    .: (( inject meta.resource_pools.medium ))
     cloud_properties:
-      instance_type: m4.large
-      root_disk:
-        size: 8_000
-      ephemeral_disk:
-        size: 10_240
+      availability_zone: (( grab meta.azs.z1 ))
+  - name: medium_z2
+    .: (( inject meta.resource_pools.medium ))
+    cloud_properties:
+      availability_zone: (( grab meta.azs.z2 ))
+  - name: medium_z3
+    .: (( inject meta.resource_pools.medium ))
+    cloud_properties:
+      availability_zone: (( grab meta.azs.z3 ))
 
-  - name: large
-    stemcell: (( grab meta.stemcell ))
+  - name: large_z1
+    .: (( inject meta.resource_pools.large ))
     cloud_properties:
-      instance_type: m4.xlarge
-      root_disk:
-        size: 8_000
-      ephemeral_disk:
-        size: 40_960
+      availability_zone: (( grab meta.azs.z1 ))
+  - name: large_z2
+    .: (( inject meta.resource_pools.large ))
+    cloud_properties:
+      availability_zone: (( grab meta.azs.z2 ))
+  - name: large_z3
+    .: (( inject meta.resource_pools.large ))
+    cloud_properties:
+      availability_zone: (( grab meta.azs.z3 ))
 
-  - name: router
-    stemcell: (( grab meta.stemcell ))
+  - name: router_z1
+    .: (( inject meta.resource_pools.router ))
     cloud_properties:
-      instance_type: t2.medium
-      root_disk:
-        size: 8_000
-      ephemeral_disk:
-        size: 10_240
-      elbs: (( grab meta.elbs ))
+      availability_zone: (( grab meta.azs.z1 ))
+  - name: router_z2
+    .: (( inject meta.resource_pools.router ))
+    cloud_properties:
+      availability_zone: (( grab meta.azs.z2 ))
+  - name: router_z3
+    .: (( inject meta.resource_pools.router ))
+    cloud_properties:
+      availability_zone: (( grab meta.azs.z3 ))
 
-  - name: runner
-    stemcell: (( grab meta.stemcell ))
+  - name: runner_z1
+    .: (( inject meta.resource_pools.runner ))
     cloud_properties:
-      instance_type: m4.xlarge
-      root_disk:
-        size: 8_000
-      ephemeral_disk:
-        size: 102_400
-        type: gp2
+      availability_zone: (( grab meta.azs.z1 ))
+  - name: runner_z2
+    .: (( inject meta.resource_pools.runner ))
+    cloud_properties:
+      availability_zone: (( grab meta.azs.z2 ))
+  - name: runner_z3
+    .: (( inject meta.resource_pools.runner ))
+    cloud_properties:
+      availability_zone: (( grab meta.azs.z3 ))
 
 compilation:
   workers: 3
