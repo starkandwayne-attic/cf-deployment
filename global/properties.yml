@@ -4,7 +4,6 @@ meta:
     base_domain: (( param "Enter the Cloud Foundry base domain" ))
     apps_domains: [ (( concat "run." meta.cf.base_domain )) ]
     system_domain: (( concat "system." meta.cf.base_domain ))
-    system_domain_organization: (( param "Set the org that will own the system domain" ))
     creds:
       admin:
         user: admin
@@ -515,7 +514,7 @@ properties:
   support_address: http://support.cloudfoundry.com
   syslog_daemon_config: null
   system_domain: (( grab meta.cf.system_domain ))
-  system_domain_organization: (( grab meta.cf.system_domain_organization ))
+  system_domain_organization: system
   traffic_controller:
     disable_access_control: null
     outgoing_port: 8080
