@@ -31,6 +31,7 @@ meta:
       blobstore_type: webdav
       fog_connection: ~
 
+  skip_ssl_validation: true
 
 properties:
   databases:
