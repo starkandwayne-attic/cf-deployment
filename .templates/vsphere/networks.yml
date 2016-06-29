@@ -1,0 +1,61 @@
+---
+meta:
+  dns: (( param "Enter the DNS server for your VPC" ))
+  security_groups: (( param "Enter the security groups which should be applied to CF VMs" ))
+  router_security_groups: (( param "Enter the security groups which should be applied to the gorouter VMs" ))
+networks:
+- name: cf1
+  type: manual
+  subnets:
+  - range: (( param "Enter the CIDR address for this subnet" ))
+    gateway: (( param "Enter the Gateway for this subnet" ))
+    dns: (( grab meta.dns ))
+    static: (( param "Enter the static IP ranges for this subnet" ))
+    reserved: (( param "Enter the reserved IP ranges for this subnet" ))
+    cloud_properties:
+      security_groups: (( grab meta.security_groups ))
+      subnet: (( param "Enter the AWS subnet ID for this subnet" ))
+- name: cf2
+  type: manual
+  subnets:
+  - range: (( param "Enter the CIDR address for this subnet" ))
+    gateway: (( param "Enter the Gateway for this subnet" ))
+    dns: (( grab meta.dns ))
+    static: (( param "Enter the static IP ranges for this subnet" ))
+    reserved: (( param "Enter the reserved IP ranges for this subnet" ))
+    cloud_properties:
+      security_groups: (( grab meta.security_groups ))
+      subnet: (( param "Enter the AWS subnet ID for this subnet" ))
+- name: cf3
+  type: manual
+  subnets:
+  - range: (( param "Enter the CIDR address for this subnet" ))
+    gateway: (( param "Enter the Gateway for this subnet" ))
+    dns: (( grab meta.dns ))
+    static: (( param "Enter the static IP ranges for this subnet" ))
+    reserved: (( param "Enter the reserved IP ranges for this subnet" ))
+    cloud_properties:
+      security_groups: (( grab meta.security_groups ))
+      subnet: (( param "Enter the AWS subnet ID for this subnet" ))
+- name: router1
+  type: manual
+  subnets:
+  - range: (( param "Enter the CIDR address for this subnet" ))
+    gateway: (( param "Enter the Gateway for this subnet" ))
+    dns: (( grab meta.dns ))
+    static: (( param "Enter the static IP ranges for this subnet" ))
+    reserved: (( param "Enter the reserved IP ranges for this subnet" ))
+    cloud_properties:
+      security_groups: (( grab meta.router_security_groups ))
+      subnet: (( param "Enter the AWS subnet ID for this subnet" ))
+- name: router2
+  type: manual
+  subnets:
+  - range: (( param "Enter the CIDR address for this subnet" ))
+    gateway: (( param "Enter the Gateway for this subnet" ))
+    dns: (( grab meta.dns ))
+    static: (( param "Enter the static IP ranges for this subnet" ))
+    reserved: (( param "Enter the reserved IP ranges for this subnet" ))
+    cloud_properties:
+      security_groups: (( grab meta.router_security_groups ))
+      subnet: (( param "Enter the AWS subnet ID for this subnet" ))

@@ -1,0 +1,71 @@
+---
+meta:
+  elbs: (( param "What elbs will be in front of the gorouters?" ))
+
+resource_pools:
+  - name: errand
+    stemcell: (( grab meta.stemcell ))
+    cloud_properties:
+      instance_type: t2.small
+      root_disk:
+        size: 8_000
+      ephemeral_disk:
+        size: 10_240
+
+  - name: small
+    stemcell: (( grab meta.stemcell ))
+    cloud_properties:
+      instance_type: t2.medium
+      root_disk:
+        size: 8_000
+      ephemeral_disk:
+        size: 10_240
+
+  - name: medium
+    stemcell: (( grab meta.stemcell ))
+    cloud_properties:
+      instance_type: m4.large
+      root_disk:
+        size: 8_000
+      ephemeral_disk:
+        size: 10_240
+
+  - name: large
+    stemcell: (( grab meta.stemcell ))
+    cloud_properties:
+      instance_type: m4.xlarge
+      root_disk:
+        size: 8_000
+      ephemeral_disk:
+        size: 40_960
+
+  - name: router
+    stemcell: (( grab meta.stemcell ))
+    cloud_properties:
+      instance_type: t2.medium
+      root_disk:
+        size: 8_000
+      ephemeral_disk:
+        size: 10_240
+      elbs: (( grab meta.elbs ))
+
+  - name: runner
+    stemcell: (( grab meta.stemcell ))
+    cloud_properties:
+      instance_type: m4.xlarge
+      root_disk:
+        size: 8_000
+      ephemeral_disk:
+        size: 102_400
+        type: gp2
+
+compilation:
+  workers: 3
+  network: cf1
+  reuse_compilation_vms: true
+  cloud_properties:
+    instance_type: c4.2xlarge
+    root_disk:
+      size: 8_000
+    ephemeral_disk:
+      size: 10_240

@@ -1,4 +1,4 @@
 spruce: 1.4
-genesis: 1.5
+genesis: 1.5.1
 certstrap: ~
-safe: 0.0.14
+safe: 0.0.18
