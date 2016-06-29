@@ -69,3 +69,4 @@ compilation:
       size: 8_000
     ephemeral_disk:
       size: 10_240
+    availability_zone: (( grab meta.azs.z1 ))
