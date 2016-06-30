@@ -4,19 +4,24 @@ meta:
     consul:
       servers: (( grab jobs.consul_z1.networks.cf1.static_ips jobs.consul_z2.networks.cf2.static_ips jobs.consul_z3.networks.cf3.static_ips ))
     gorouter:
-      servers: (( grab jobs.router_z1.networks.cf1.static_ips jobs.router_z2.networks.cf2.static_ips ))
+      servers: (( grab jobs.router_z1.networks.router1.static_ips jobs.router_z2.networks.router2.static_ips ))
     etcd:
       servers: (( grab jobs.etcd_z1.networks.cf1.static_ips jobs.etcd_z2.networks.cf2.static_ips jobs.etcd_z3.networks.cf3.static_ips ))
     nats:
       servers: (( grab jobs.nats_z1.networks.cf1.static_ips jobs.nats_z2.networks.cf2.static_ips ))
 
-    #FIXME: ccdb/uaadb? leave all at env-level?
+    ccdb:
+      scheme: mysql
+      port: 3306
+    uaadb:
+      scheme: mysql
+      port: 3306
+
 
     blobstore_config:
       blobstore_type: fog
       webdav_config: ~
       fog_connection:
-        #FIXME: do i need to specify a bucket? Does the bucket auto-create?
         provider: AWS
         aws_access_key_id: (( param "What is the access key id for the blobstore S3 buckets?" ))
         aws_secret_access_key: (( param "What is the secret key for the blobstore S3 buckets?" ))
