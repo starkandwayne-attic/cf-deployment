@@ -14,14 +14,14 @@ meta:
       servers: (( grab jobs.nats_z1.networks.cf.static_ips ))
 
     uaadb:
-      host: (( grab jobs.postgres_z1.networks.cf1.static_ips.0 ))
+      host: (( grab jobs.postgres_z1.networks.cf.static_ips.0 ))
       scheme: postgresql
       user: uaaadmin
       pass: (( vault meta.vault_prefix "/uaadb:password" ))
       port: (( grab properties.postgres.config.port ))
 
     ccdb:
-      host: (( grab jobs.postgres_z1.networks.cf1.static_ips.0 ))
+      host: (( grab jobs.postgres_z1.networks.cf.static_ips.0 ))
       scheme: postgres
       pass: (( vault meta.vault_prefix "/ccdb:password" ))
       user: ccadmin
