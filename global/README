@@ -1,0 +1,20 @@
+Global Definitions
+
+This directory contains templates that describe the common elements of this
+deployments, to be shared (and possibly overridden) by sites and environments.
+The templates are merged in the following order:
+
+  global/jobs.yml             Specify what jobs will make up the canonical
+                              deployment, and what templates to apply to them.
+
+  global/deployment.yml       Define the global structure of all deployments
+                              with the correct param calls to remind template
+                              writers to override the correct things.
+
+  global/properties.yml       Define the properties (global or per-job) for this
+                              deployment.
+
+
+NOTE: If you make changes to the templates in here, they will automatically
+propagate to any newly-created environments, but you will need to run a
+refresh for existing environments to receive those updates.

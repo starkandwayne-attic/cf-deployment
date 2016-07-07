@@ -12,6 +12,10 @@ meta:
         release: cf
       - name: metron_agent
         release: cf
+      - name: toolbelt
+        release: toolbelt
+      - name: toolbelt-quick
+        release: toolbelt
       update:
         max_in_flight: 1
         serial: true
@@ -23,6 +27,10 @@ meta:
         release: cf
       - name: consul_agent
         release: cf
+      - name: toolbelt
+        release: toolbelt
+      - name: toolbelt-quick
+        release: toolbelt
       update: {}
       properties:
         router:
@@ -35,6 +43,10 @@ meta:
         release: cf
       - name: metron_agent
         release: cf
+      - name: toolbelt
+        release: toolbelt
+      - name: toolbelt-quick
+        release: toolbelt
       update: {}
     etcd:
       persistent_disk_pool: (( param "Specify the persistent disk pool for etcd" ))
@@ -45,6 +57,10 @@ meta:
         release: cf
       - name: metron_agent
         release: cf
+      - name: toolbelt
+        release: toolbelt
+      - name: toolbelt-quick
+        release: toolbelt
       update:
         max_in_flight: 1
         serial: true
@@ -54,6 +70,10 @@ meta:
         release: cf
       - name: metron_agent
         release: cf
+      - name: toolbelt
+        release: toolbelt
+      - name: toolbelt-quick
+        release: toolbelt
       update: {}
     nfs:
       persistent_disk_pool: (( param "Specify the persistent disk pool for nfs" ))
@@ -68,6 +88,10 @@ meta:
         release: cf
       - name: route_registrar
         release: cf
+      - name: toolbelt
+        release: toolbelt
+      - name: toolbelt-quick
+        release: toolbelt
       update: {}
       properties:
         consul:
@@ -93,6 +117,10 @@ meta:
         release: cf
       - name: route_registrar
         release: cf
+      - name: toolbelt
+        release: toolbelt
+      - name: toolbelt-quick
+        release: toolbelt
       update: {}
       persistent_disk_pool: (( param "Specify the persistent disk pool for blobstore" ))
       properties:
@@ -113,9 +141,13 @@ meta:
       persistent_disk_pool: (( param "Specify the persistent disk pool for postgres" ))
       templates:
       - name: postgres
-        release: cf
+        release: postgres
       - name: metron_agent
         release: cf
+      - name: toolbelt
+        release: toolbelt
+      - name: toolbelt-quick
+        release: toolbelt
       update: {}
     uaa:
       templates:
@@ -129,6 +161,10 @@ meta:
         release: cf
       - name: statsd-injector
         release: cf
+      - name: toolbelt
+        release: toolbelt
+      - name: toolbelt-quick
+        release: toolbelt
       update: {}
       properties:
         consul:
@@ -183,6 +219,10 @@ meta:
         release: cf
       - name: route_registrar
         release: cf
+      - name: toolbelt
+        release: toolbelt
+      - name: toolbelt-quick
+        release: toolbelt
       update: {}
       properties:
         consul:
@@ -205,6 +245,10 @@ meta:
         release: cf
       - name: metron_agent
         release: cf
+      - name: toolbelt
+        release: toolbelt
+      - name: toolbelt-quick
+        release: toolbelt
       update: {}
     api_worker:
       templates:
@@ -214,6 +258,10 @@ meta:
         release: cf
       - name: metron_agent
         release: cf
+      - name: toolbelt
+        release: toolbelt
+      - name: toolbelt-quick
+        release: toolbelt
       update: {}
       properties:
         nfs_server: (( grab properties.nfs_server ))
@@ -227,6 +275,10 @@ meta:
         release: cf
       - name: route_registrar
         release: cf
+      - name: toolbelt
+        release: toolbelt
+      - name: toolbelt-quick
+        release: toolbelt
       update: {}
       properties:
         consul:
@@ -252,6 +304,10 @@ meta:
         release: cf
       - name: metron_agent
         release: cf
+      - name: toolbelt
+        release: toolbelt
+      - name: toolbelt-quick
+        release: toolbelt
       update:
         max_in_flight: 1
       properties:
@@ -272,6 +328,10 @@ meta:
         release: cf
       - name: metron_agent
         release: cf
+      - name: toolbelt
+        release: toolbelt
+      - name: toolbelt-quick
+        release: toolbelt
       update: {}
     doppler:
       templates:
@@ -281,6 +341,10 @@ meta:
         release: cf
       - name: metron_agent
         release: cf
+      - name: toolbelt
+        release: toolbelt
+      - name: toolbelt-quick
+        release: toolbelt
       update: {}
     trafficcontroller:
       templates:
@@ -290,6 +354,10 @@ meta:
         release: cf
       - name: route_registrar
         release: cf
+      - name: toolbelt
+        release: toolbelt
+      - name: toolbelt-quick
+        release: toolbelt
       update: {}
       properties:
         route_registrar:
@@ -312,6 +380,10 @@ meta:
         release: cf
       - name: metron_agent
         release: cf
+      - name: toolbelt
+        release: toolbelt
+      - name: toolbelt-quick
+        release: toolbelt
       update: {}
       properties:
         consul:
@@ -330,6 +402,10 @@ jobs:
   templates:
   - name: acceptance-tests
     release: cf
+  - name: toolbelt
+    release: toolbelt
+  - name: toolbelt-quick
+    release: toolbelt
 - instances: 1
   name: smoke_tests
   .: (( inject meta.jobs.errand ))
@@ -338,3 +414,7 @@ jobs:
   templates:
   - name: smoke-tests
     release: cf
+  - name: toolbelt
+    release: toolbelt
+  - name: toolbelt-quick
+    release: toolbelt

@@ -57,6 +57,7 @@ meta:
       scheme: (( param "Specify the type of database the ccdb is (postgres, mysql)" ))
       user: (( param "Specify the user to connect to the ccdb" ))
       pass:  (( param "Specify the password of the ccdb user" ))
+      dbname: ccdb
 
     consul:
       servers: (( param "Specify which IPs are being used by consul servers" ))
@@ -98,6 +99,7 @@ meta:
       scheme: (( param "Specify the type of database the uaadb is (postgres, mysql)" ))
       user: (( param "Specify the user to connect to the uaadb" ))
       pass: (( param "Specify the password of the uaadb user" ))
+      dbname: uaadb
 
   skip_ssl_validation: false
 
@@ -319,7 +321,7 @@ properties:
     address: (( grab meta.cf.ccdb.host ))
     databases:
     - citext: true
-      name: ccdb
+      name: (( grab meta.cf.ccdb.dbname ))
       tag: cc
     db_scheme: (( grab meta.cf.ccdb.scheme ))
     port: (( grab meta.cf.ccdb.port ))
@@ -341,7 +343,6 @@ properties:
     - (( grab meta.cf.consul.encryption_key ))
     server_cert: (( grab meta.cf.consul.server_cert ))
     server_key: (( grab meta.cf.consul.server_key ))
-  databases: (( param "Configure the databases to be set up, if using the built-in postgres server" ))
   dea_next:
     advertise_interval_in_seconds: 5
     allow_host_access: null
@@ -621,11 +622,11 @@ properties:
     address: (( grab meta.cf.uaadb.host ))
     databases:
     - citext: true
-      name: uaadb
+      name: (( grab meta.cf.uaadb.dbname ))
       tag: uaa
     db_scheme: (( grab meta.cf.uaadb.scheme ))
     port: (( grab meta.cf.uaadb.port ))
     roles:
-    - name: uaaadmin
+    - name: (( grab meta.cf.uaadb.user ))
       password: (( grab meta.cf.uaadb.pass ))
       tag: admin

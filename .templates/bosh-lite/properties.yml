@@ -14,18 +14,18 @@ meta:
       servers: (( grab jobs.nats_z1.networks.cf.static_ips ))
 
     uaadb:
-      host: (( grab jobs.postgres_z1.networks.cf.static_ips.0 ))
+      host: (( grab jobs.postgres_z1.networks.cf1.static_ips.0 ))
       scheme: postgresql
-      port: (( grab properties.databases.port ))
       user: uaaadmin
-      pass: (( grab properties.databases.roles.uaaadmin.password ))
+      pass: (( vault meta.vault_prefix "/uaadb:password" ))
+      port: (( grab properties.postgres.config.port ))
 
     ccdb:
-      host: (( grab jobs.postgres_z1.networks.cf.static_ips.0 ))
+      host: (( grab jobs.postgres_z1.networks.cf1.static_ips.0 ))
       scheme: postgres
-      port: (( grab properties.databases.port ))
+      pass: (( vault meta.vault_prefix "/ccdb:password" ))
       user: ccadmin
-      pass: (( grab properties.databases.roles.ccadmin.password ))
+      port: (( grab properties.postgres.config.port ))
 
     blobstore_config:
       blobstore_type: webdav
@@ -34,23 +34,31 @@ meta:
   skip_ssl_validation: true
 
 properties:
-  databases:
-    db_scheme: postgres
-    port: 5524
-    roles:
-    - tag: admin
-      name: ccadmin
-      password: (( vault meta.vault_prefix "/creds/db:ccadmin" ))
-    - tag: admin
-      name: uaaadmin
-      password: (( vault meta.vault_prefix "/creds/db:uaaadmin" ))
-    databases:
-    - tag: cc
-      name: ccdb
-      citext: true
-    - tag: uaa
-      name: uaadb
-      citext: true
-    collect_statement_statistics: true
-
   nfs_server: ~
+  pgpool:
+    databases:
+    - name: ccdb
+      users:
+      - (( grab meta.cf.ccdb.user ))
+      extensions:
+      - citext
+      - pgcrypto
+    - name: uaadb
+      users:
+      - (( grab meta.cf.uaadb.user ))
+      extensions:
+      - citext
+      - pgcrypto
+    users:
+    - username: (( grab meta.cf.uaadb.user ))
+      password: (( grab meta.cf.uaadb.pass ))
+    - username: (( grab meta.cf.ccdb.user ))
+      password: (( grab meta.cf.ccdb.pass ))
+  postgres:
+    config:
+      port: 5432
+    hba:
+    - host all all 0.0.0.0/0 md5
+    - host all all ::/0 md5
+    replication:
+      enabled: false
