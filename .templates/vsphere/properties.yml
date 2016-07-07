@@ -43,13 +43,13 @@ properties:
   blobstore: ~
   pgpool:
     databases:
-    - name: ccdb
+    - name: (( grab meta.cf.ccdb.dbname ))
       users:
       - (( grab meta.cf.ccdb.user ))
       extensions:
       - citext
       - pgcrypto
-    - name: uaadb
+    - name: (( grab meta.cf.uaadb.dbname ))
       users:
       - (( grab meta.cf.uaadb.user ))
       extensions:

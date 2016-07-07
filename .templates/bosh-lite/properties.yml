@@ -37,13 +37,13 @@ properties:
   nfs_server: ~
   pgpool:
     databases:
-    - name: ccdb
+    - name: (( grab meta.cf.ccdb.dbname ))
       users:
       - (( grab meta.cf.ccdb.user ))
       extensions:
       - citext
       - pgcrypto
-    - name: uaadb
+    - name: (( grab meta.cf.uaadb.dbname ))
       users:
       - (( grab meta.cf.uaadb.user ))
       extensions:
@@ -57,7 +57,7 @@ properties:
   postgres:
     config:
       port: 5432
-      listen_address: '*'
+      listen_addresses: '*'
     hba:
     - host all all 0.0.0.0/0 md5
     - host all all ::/0 md5
