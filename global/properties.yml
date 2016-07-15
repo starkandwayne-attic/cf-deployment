@@ -107,7 +107,7 @@ properties:
   acceptance_tests:
     admin_password: (( grab meta.cf.creds.admin.pass ))
     admin_user: (( grab meta.cf.creds.admin.user ))
-    api: (( concat "api." meta.cf.system_domain ))
+    api: (( concat "https://api." meta.cf.system_domain ))
     apps_domain: (( grab meta.cf.apps_domains.0 ))
     nodes: 1
     skip_ssl_validation: (( grab meta.skip_ssl_validation ))
@@ -502,7 +502,7 @@ properties:
   routing_api:
     enabled: null
   smoke_tests:
-    api: (( concat "api." meta.cf.system_domain ))
+    api: (( concat "https://api." meta.cf.system_domain ))
     apps_domain: (( grab meta.cf.apps_domains.0 ))
     ginkgo_opts: null
     org: SMOKE_TEST_ORG
