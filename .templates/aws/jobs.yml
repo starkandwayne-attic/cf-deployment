@@ -187,7 +187,7 @@ jobs:
   instances: 1
   .: (( inject meta.jobs.runner ))
   networks:
-  - name: cf1
+  - name: runner1
   properties:
     metron_agent:
       zone: z1
@@ -198,7 +198,7 @@ jobs:
   instances: 1
   .: (( inject meta.jobs.runner ))
   networks:
-  - name: cf2
+  - name: runner2
   properties:
     metron_agent:
       zone: z2

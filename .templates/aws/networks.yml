@@ -38,6 +38,39 @@ networks:
     cloud_properties:
       security_groups: (( grab meta.security_groups ))
       subnet: (( param "Enter the AWS subnet ID for this subnet" ))
+- name: runner1
+  type: manual
+  subnets:
+  - range: (( param "Enter the CIDR address for this subnet" ))
+    gateway: (( param "Enter the Gateway for this subnet" ))
+    dns: (( grab meta.dns ))
+    static: (( param "Enter the static IP ranges for this subnet" ))
+    reserved: (( param "Enter the reserved IP ranges for this subnet" ))
+    cloud_properties:
+      security_groups: (( grab meta.security_groups ))
+      subnet: (( param "Enter the AWS subnet ID for this subnet" ))
+- name: runner2
+  type: manual
+  subnets:
+  - range: (( param "Enter the CIDR address for this subnet" ))
+    gateway: (( param "Enter the Gateway for this subnet" ))
+    dns: (( grab meta.dns ))
+    static: (( param "Enter the static IP ranges for this subnet" ))
+    reserved: (( param "Enter the reserved IP ranges for this subnet" ))
+    cloud_properties:
+      security_groups: (( grab meta.security_groups ))
+      subnet: (( param "Enter the AWS subnet ID for this subnet" ))
+- name: runner3
+  type: manual
+  subnets:
+  - range: (( param "Enter the CIDR address for this subnet" ))
+    gateway: (( param "Enter the Gateway for this subnet" ))
+    dns: (( grab meta.dns ))
+    static: (( param "Enter the static IP ranges for this subnet" ))
+    reserved: (( param "Enter the reserved IP ranges for this subnet" ))
+    cloud_properties:
+      security_groups: (( grab meta.security_groups ))
+      subnet: (( param "Enter the AWS subnet ID for this subnet" ))
 - name: router1
   type: manual
   subnets:
