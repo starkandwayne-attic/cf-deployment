@@ -2,6 +2,7 @@
 meta:
   cf:
     base_domain: bosh-lite.com # override this if non-traditional bosh-lite
+    directory_key_prefix: bosh-lite-com #Replace period with dash in base_domain
     system_domain_organization: system
 
     consul:
