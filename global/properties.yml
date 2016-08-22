@@ -425,6 +425,9 @@ properties:
     maxRetainedLogMessages: 100
     message_drain_buffer_size: null
     port: 4443
+    etcd:
+      client_cert: (( grab meta.cf.etcd.client_cert ))
+      client_key:  (( grab meta.cf.etcd.client_key ))
     tls:
       enable: null
       port: null
@@ -526,7 +529,7 @@ properties:
     enable_buffer: null
     etcd:
       client_cert: (( grab meta.cf.etcd.client_cert ))
-      client_key: (( grab meta.cf.etcd.client_key ))
+      client_key:  (( grab meta.cf.etcd.client_key ))
     preferred_protocol: null
     protocols: null
     tls:
