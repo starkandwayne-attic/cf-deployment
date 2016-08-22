@@ -51,6 +51,8 @@ meta:
     etcd:
       persistent_disk_pool: (( param "Specify the persistent disk pool for etcd" ))
       templates:
+      - name: consul_agent
+        release: cf
       - name: etcd
         release: cf
       - name: etcd_metrics_server
@@ -64,6 +66,11 @@ meta:
       update:
         max_in_flight: 1
         serial: true
+      properties:
+        consul:
+          agent:
+            services:
+              etcd: {}
     stats:
       templates:
       - name: collector
