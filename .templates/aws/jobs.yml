@@ -257,8 +257,6 @@ jobs:
   properties:
     metron_agent:
       zone: z1
-    traffic_controller:
-      zone: z1
   resource_pool: small_z1
 - name: loggregator_trafficcontroller_z2
   instances: 1
@@ -267,8 +265,6 @@ jobs:
   - name: cf2
   properties:
     metron_agent:
-      zone: z2
-    traffic_controller:
       zone: z2
   resource_pool: small_z2
 - name: router_z1

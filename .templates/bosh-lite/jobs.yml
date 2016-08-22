@@ -203,8 +203,6 @@ jobs:
   properties:
     metron_agent:
       zone: z1
-    traffic_controller:
-      zone: z1
   resource_pool: warden
   networks:
   - name: cf
