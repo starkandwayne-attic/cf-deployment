@@ -375,8 +375,6 @@ meta:
         release: diego
       - name: metron_agent
         release: cf
-      - name: cfdot
-        release: diego
       - name: toolbelt
         release: toolbelt
       - name: toolbelt-quick
@@ -392,8 +390,6 @@ meta:
         release: diego
       - name: metron_agent
         release: cf
-      - name: cfdot
-        release: diego
       - name: toolbelt
         release: toolbelt
       - name: toolbelt-quick
@@ -413,8 +409,6 @@ meta:
         release: cflinuxfs2-rootfs
       - name: metron_agent
         release: cf
-      - name: cfdot
-        release: diego
       - name: toolbelt
         release: toolbelt
       - name: toolbelt-quick
@@ -449,8 +443,6 @@ meta:
         release: diego
       - name: metron_agent
         release: cf
-      - name: cfdot
-        release: diego
       - name: toolbelt
         release: toolbelt
       - name: toolbelt-quick
@@ -466,8 +458,6 @@ meta:
       - name: metron_agent
         release: cf
       - name: file_server
-        release: diego
-      - name: cfdot
         release: diego
       - name: toolbelt
         release: toolbelt
