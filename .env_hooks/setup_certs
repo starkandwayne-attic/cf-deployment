@@ -57,7 +57,7 @@ upload_to_vault dea_server dea.service.cf.internal
 
 upload_to_vault etcd_client clientName
 upload_to_vault etcd_server etcd.service.cf.internal
-upload_to_vault etcd_peers etcd.service.cf.internal
+upload_to_vault etcd_peer etcd.service.cf.internal
 
 upload_to_vault hm9000_client hm9000_client
 upload_to_vault hm9000_server listener-hm9000.service.cf.internal
