@@ -359,6 +359,122 @@ meta:
           agent:
             services:
               gorouter: {}
+    database:
+      persistent_disk_pool: (( param "Specify the persistent disk pool for database" ))
+      properties:
+        consul:
+          agent:
+            services:
+              etcd: {}
+      templates:
+      - name: consul_agent
+        release: cf
+      - name: etcd
+        release: cf
+      - name: bbs
+        release: diego
+      - name: metron_agent
+        release: cf
+      - name: cfdot
+        release: diego
+      - name: toolbelt
+        release: toolbelt
+      - name: toolbelt-quick
+        release: toolbelt
+      update:
+        max_in_flight: 1
+        serial: true
+    brain:
+      templates:
+      - name: consul_agent
+        release: cf
+      - name: auctioneer
+        release: diego
+      - name: metron_agent
+        release: cf
+      - name: cfdot
+        release: diego
+      - name: toolbelt
+        release: toolbelt
+      - name: toolbelt-quick
+        release: toolbelt
+      update:
+        max_in_flight: 1
+        serial: true
+    cell:
+      templates:
+      - name: consul_agent
+        release: cf
+      - name: rep
+        release: diego
+      - name: garden
+        release: garden-linux
+      - name: cflinuxfs2-rootfs-setup
+        release: cflinuxfs2-rootfs
+      - name: metron_agent
+        release: cf
+      - name: cfdot
+        release: diego
+      - name: toolbelt
+        release: toolbelt
+      - name: toolbelt-quick
+        release: toolbelt
+      update:
+        max_in_flight: 1
+    cc_bridge:
+      templates:
+      - name: consul_agent
+        release: cf
+      - name: stager
+        release: cf
+      - name: nsync
+        release: cf
+      - name: tps
+        release: cf
+      - name: cc_uploader
+        release: cf
+      - name: metron_agent
+        release: cf
+      - name: toolbelt
+        release: toolbelt
+      - name: toolbelt-quick
+        release: toolbelt
+      update:
+        max_in_flight: 1
+    route_emitter:
+      templates:
+      - name: consul_agent
+        release: cf
+      - name: route_emitter
+        release: diego
+      - name: metron_agent
+        release: cf
+      - name: cfdot
+        release: diego
+      - name: toolbelt
+        release: toolbelt
+      - name: toolbelt-quick
+        release: toolbelt
+      update:
+        max_in_flight: 1
+    access:
+      templates:
+      - name: consul_agent
+        release: cf
+      - name: ssh_proxy
+        release: diego
+      - name: metron_agent
+        release: cf
+      - name: file_server
+        release: diego
+      - name: cfdot
+        release: diego
+      - name: toolbelt
+        release: toolbelt
+      - name: toolbelt-quick
+        release: toolbelt
+      update:
+        max_in_flight: 1
     errand:
       lifecycle: errand
 
