@@ -39,6 +39,9 @@ meta:
         ssh_proxy_secret: (( vault meta.vault_prefix "/creds/uaa/secrets:ssh_proxy" ))
         tcp_emitter_secret: (( vault meta.vault_prefix "/creds/uaa/secrets:tcp_emitter" ))
         tcp_router_secret: (( vault meta.vault_prefix "/creds/uaa/secrets:tcp_router" ))
+      diego:
+        secret: (( vault meta.vault_prefix "/creds/diego:secret" ))
+        encryption_key: (( vault meta.vault_prefix "/creds/diego:encryption_key" ))
 
     blobstore_config:
       blobstore_type: (( param "Set the blobstore type (webdav or fog)" ))
@@ -85,6 +88,14 @@ meta:
       servers: (( param "Enter the IPs of the gorouters" ))
     etcd:
       servers: (( param "Enter the IPs of the etcd servers" ))
+      ca_cert: (( vault meta.vault_prefix "/certs/internal_ca:cert" ))
+      client_cert: (( vault meta.vault_prefix "/certs/etcd_client:cert" ))
+      client_key: (( vault meta.vault_prefix "/certs/etcd_client:key" ))
+      peer_cert: (( vault meta.vault_prefix "/certs/etcd_peer:cert" ))
+      peer_key: (( vault meta.vault_prefix "/certs/etcd_peer:key" ))
+      server_cert: (( vault meta.vault_prefix "/certs/etcd_server:cert" ))
+      server_key: (( vault meta.vault_prefix "/certs/etcd_server:key" ))
+      cluster: (( param "Enter the etcd cluster instances" ))
     nats:
       servers: (( param "Enter the IPs of the nats servers" ))
       user: nats_user
@@ -101,6 +112,25 @@ meta:
       user: (( param "Specify the user to connect to the uaadb" ))
       pass: (( param "Specify the password of the uaadb user" ))
       dbname: uaadb
+
+    diegodb:
+      host: (( param "What hostname/IP is the diegodb available at?" ))
+      port: (( param "What port is the diegodb listening on?" ))
+      scheme: (( param "Specify the type of database the diegodb is (postgres, mysql)" ))
+      user: (( param "Specify the user to connect to the diegodb" ))
+      pass: (( param "Specify the password of the diegodb user" ))
+      dbname: diegodb
+
+    bbs:
+      api_location: null
+      ca_cert: (( vault meta.vault_prefix "/certs/internal_ca:cert" ))
+      client_cert: (( vault meta.vault_prefix "/certs/bbs_client:cert" ))
+      client_key: (( vault meta.vault_prefix "/certs/bbs_client:key" ))
+      client_session_cache_size: null
+      max_idle_conns_per_host: null
+      require_ssl: true
+      server_cert: (( vault meta.vault_prefix "/certs/bbs:cert" ))
+      server_key: (( vault meta.vault_prefix "/certs/bbs:key" ))
 
   skip_ssl_validation: false
 
@@ -344,6 +374,7 @@ properties:
   collector: null
   consul:
     agent:
+      datacenter: null
       domain: cf.internal
       log_level: null
       servers:
@@ -406,9 +437,21 @@ properties:
   dropsonde:
     enabled: true
   etcd:
+    advertise_urls_dns_suffix: etcd.service.cf.internal
+    ca_cert: (( grab meta.cf.etcd.ca_cert ))
+    client_cert: (( grab meta.cf.etcd.client_cert ))
+    client_key: (( grab meta.cf.etcd.client_key ))
+    election_timeout_in_milliseconds: null
+    heartbeat_interval_in_milliseconds: null
     machines: (( grab meta.cf.etcd.servers ))
-    peer_require_ssl: false
-    require_ssl: false
+    peer_ca_cert: (( grab meta.cf.etcd.ca_cert ))
+    peer_cert: (( grab meta.cf.etcd.peer_cert ))
+    peer_key: (( grab meta.cf.etcd.peer_key ))
+    server_cert: (( grab meta.cf.etcd.server_cert ))
+    server_key: (( grab meta.cf.etcd.server_key ))
+    peer_require_ssl: true
+    require_ssl: true
+    cluster: (( grab.meta.cf.etcd.cluster ))
   etcd_metrics_server:
     nats:
       machines: (( grab meta.cf.nats.servers ))
@@ -434,11 +477,14 @@ properties:
     blacklisted_syslog_ranges: null
     debug: false
     etcd:
+      ca_cert: null
       machines: (( grab meta.cf.etcd.servers ))
+      require_ssl: null
     maxRetainedLogMessages: 100
     outgoing_dropsonde_port: 8081
     tls:
       ca_cert: null
+    dropsonde_incoming_port: null
   loggregator_endpoint:
     shared_secret: (( grab meta.cf.creds.loggregator.endpoint_secret ))
   login:
@@ -474,8 +520,13 @@ properties:
   metron_agent:
     buffer_size: null
     deployment: (( grab name ))
+    dropsonde_incoming_port: null
     enable_buffer: null
+    etcd:
+      client_cert: null
+      client_key: null
     preferred_protocol: null
+    protocols: null
     tls:
       client_cert: null
       client_key: null
@@ -647,3 +698,147 @@ properties:
     - name: (( grab meta.cf.uaadb.user ))
       password: (( grab meta.cf.uaadb.pass ))
       tag: admin
+  capi:
+    cc_uploader:
+      dropsonde_port: null
+      log_level: null
+    nsync:
+      .: (( inject meta.cf.bbs ))
+      cc:
+        base_url: (( concat "https://api." meta.cf.base_domain ))
+        basic_auth_password: (( grab meta.cf.creds.cc.internal_api_password ))
+        basic_auth_username: (( grab meta.cf.creds.cc.internal_api_user ))
+      diego_privileged_containers: null
+      dropsonde_port: null
+      log_level: debug
+    stager:
+      .: (( inject meta.cf.bbs ))
+      cc:
+        basic_auth_password: (( grab meta.cf.creds.cc.internal_api_password ))
+        basic_auth_username: (( grab meta.cf.creds.cc.internal_api_user ))
+      diego_privileged_containers: null
+      dropsonde_port: null
+      insecure_docker_registry_list: null
+      log_level: debug
+    tps:
+      .: (( inject meta.cf.bbs ))
+      cc:
+        basic_auth_password: (( grab meta.cf.creds.cc.internal_api_password ))
+        basic_auth_username: (( grab meta.cf.creds.cc.internal_api_user ))
+      dropsonde_port: null
+      log_level: null
+      traffic_controller_url: (( concat "wss://doppler." meta.cf.base_domain ":443" ))
+  cflinuxfs2-rootfs:
+    trusted_certs: null
+  diego:
+    auctioneer:
+      .: (( inject meta.cf.bbs ))
+      cell_state_timeout: null
+      dropsonde_port: null
+      log_level: null
+      starting_container_weight: null
+    bbs:
+      active_key_label: key1
+      auctioneer:
+        api_url: null
+      ca_cert: (( grab meta.cf.bbs.ca_cert ))
+      convergence:
+        expire_completed_task_duration_in_seconds: null
+        expire_pending_task_duration_in_seconds: null
+        kick_task_duration_in_seconds: null
+        repeat_interval_in_seconds: null
+      dropsonde_port: null
+      encryption_keys:
+      - label: key1
+        passphrase: (( grab meta.cf.creds.diego.encryption_key ))
+      etcd:
+        ca_cert: (( grab meta.cf.bbs.ca_cert ))
+        client_cert: (( grab meta.cf.bbs.client_cert ))
+        client_key: (( grab meta.cf.bbs.client_key ))
+        client_session_cache_size: null
+        machines:
+        - etcd.service.cf.internal
+        max_idle_conns_per_host: null
+        require_ssl: true
+      log_level: null
+      require_ssl: true
+      server_cert: (( grab meta.cf.bbs.server_cert ))
+      server_key: (( grab meta.cf.bbs.server_key ))
+      sql:
+        ca_cert: null
+        db_connection_string: (( concat meta.cf.diegodb.scheme "://" meta.cf.diegodb.user ":" meta.cf.diegodb.pass "@" meta.cf.diegodb.host ":" meta.cf.diegodb.port "/" meta.cf.diegodb.dbname ))
+        db_driver: (( grab meta.cf.diegodb.scheme ))
+        max_open_connections: 500
+        require_ssl: null
+    cfdot:
+      .: (( inject meta.cf.bbs ))
+    executor:
+      ca_certs_for_downloads: null
+      container_metrics_report_interval: null
+      disk_capacity_mb: null
+      drain_timeout_in_seconds: 0
+      garden:
+        address: 127.0.0.1:7777
+        network: tcp
+      garden_healthcheck:
+        command_retry_pause: null
+        interval: null
+        process:
+          args: null
+          dir: null
+          env: null
+          path: null
+          user: null
+        timeout: null
+      log_level: debug
+      max_cache_size_in_bytes: null
+      memory_capacity_mb: null
+      post_setup_hook: null
+      post_setup_user: null
+    file_server:
+      dropsonde_port: null
+      log_level: null
+    rep:
+      .: (( inject meta.cf.bbs ))
+      dropsonde_port: null
+      evacuation_timeout_in_seconds: 60
+      log_level: debug
+      preloaded_rootfses:
+      - cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs
+      trusted_certs: null
+    route_emitter:
+      .: (( inject meta.cf.bbs ))
+      dropsonde_port: null
+      log_level: debug
+      nats:
+        machines: (( grab meta.cf.nats.servers ))
+        password: (( grab meta.cf.nats.pass ))
+        username: (( grab meta.cf.nats.user ))
+        port: 4222
+    ssh_proxy:
+      .: (( inject meta.cf.bbs ))
+      diego_credentials: (( grab meta.cf.creds.diego.secret ))
+      dropsonde_port: null
+      enable_cf_auth: true
+      enable_diego_auth: true
+      host_key: (( vault meta.vault_prefix "/app_ssh:private" ))
+      uaa_secret: (( grab meta.cf.creds.uaa.ssh_proxy_secret ))
+      uaa_token_url: (( concat "https://uaa." meta.cf.base_domain "/oauth/token" ))
+    ssl:
+      skip_cert_verify: (( grab meta.skip_ssl_validation ))
+  garden:
+    allow_host_access: null
+    allow_networks: null
+    default_container_grace_time: 0
+    deny_networks:
+    - 0.0.0.0/0
+    destroy_containers_on_start: true
+    disk_quota_enabled: null
+    graph_cleanup_threshold_in_mb: 0
+    insecure_docker_registry_list: null
+    listen_address: 0.0.0.0:7777
+    listen_network: tcp
+    log_level: debug
+    network_mtu: null
+    persistent_image_list:
+    - /var/vcap/packages/cflinuxfs2/rootfs
