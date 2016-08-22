@@ -51,7 +51,7 @@ meta:
         blobstore_timeout: 5
         ca_cert: (( vault meta.vault_prefix "/certs/internal_ca:cert" ))
         password: (( grab meta.cf.creds.blobstore.pass ))
-        private_endpoint: https://blobstore.service.cf.internal
+        private_endpoint: https://blobstore.service.cf.internal:4443
         public_endpoint: (( concat "http://blobstore." meta.cf.system_domain ))
         username: (( grab meta.cf.creds.blobstore.user ))
 
@@ -157,7 +157,7 @@ properties:
     tls:
       ca_cert: (( vault meta.vault_prefix "/certs/internal_ca:cert" ))
       cert: (( vault meta.vault_prefix "/certs/blobstore:cert" ))
-      port: 443
+      port: 4443
       private_key: (( vault meta.vault_prefix "/certs/blobstore:key" ))
   cc:
     allow_app_ssh_access: true
@@ -463,11 +463,11 @@ properties:
     client_cert: (( grab meta.cf.hm9000.client_cert ))
     client_key: (( grab meta.cf.hm9000.client_key ))
     etcd:
-      ca_cert: null
-      client_cert: null
-      client_key: null
+      ca_cert: (( grab meta.cf.etcd.ca_cert ))
+      client_cert: (( grab meta.cf.etcd.client_cert ))
+      client_key: (( grab meta.cf.etcd.client_key ))
       machines: (( grab meta.cf.etcd.servers ))
-      require_ssl: null
+      require_ssl: true
     port: 5155
     server_cert: (( grab meta.cf.hm9000.server_cert ))
     server_key: (( grab meta.cf.hm9000.server_key ))
@@ -477,9 +477,11 @@ properties:
     blacklisted_syslog_ranges: null
     debug: false
     etcd:
-      ca_cert: null
+      ca_cert: (( grab meta.cf.etcd.ca_cert ))
       machines: (( grab meta.cf.etcd.servers ))
-      require_ssl: null
+      client_cert: (( grab meta.cf.etcd.client_cert ))
+      client_key: (( grab meta.cf.etcd.client_key ))
+      require_ssl: true
     maxRetainedLogMessages: 100
     outgoing_dropsonde_port: 8081
     tls:
