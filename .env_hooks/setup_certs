@@ -38,12 +38,13 @@ gen_cert consul_agent
 gen_cert server.dc1.cf.internal
 gen_cert dea_client
 gen_cert dea.service.cf.internal
-gen_cert clientName #etcd client
-gen_cert etcd.service.consul
+gen_cert clientName #etcd client & bbs client
+gen_cert etcd.service.cf.internal
 gen_cert hm9000_client
 gen_cert listener-hm9000.service.cf.internal
 gen_cert blobstore.service.cf.internal
 gen_cert uaa.service.cf.internal
+gen_cert bbs.service.cf.internal
 
 echo "Uploading Cloud Foundry internal certs to Vault"
 upload_to_vault internal_ca cf-ca
@@ -55,7 +56,8 @@ upload_to_vault dea_client dea_client
 upload_to_vault dea_server dea.service.cf.internal
 
 upload_to_vault etcd_client clientName
-upload_to_vault etcd_server etcd.service.consul
+upload_to_vault etcd_server etcd.service.cf.internal
+upload_to_vault etcd_peers etcd.service.cf.internal
 
 upload_to_vault hm9000_client hm9000_client
 upload_to_vault hm9000_server listener-hm9000.service.cf.internal
@@ -63,3 +65,6 @@ upload_to_vault hm9000_server listener-hm9000.service.cf.internal
 upload_to_vault blobstore blobstore.service.cf.internal
 
 upload_to_vault uaa uaa.service.cf.internal
+
+upload_to_vault bbs_client clientName
+upload_to_vault bbs bbs.service.cf.internal
