@@ -466,6 +466,7 @@ properties:
     client_cert: (( grab meta.cf.hm9000.client_cert ))
     client_key: (( grab meta.cf.hm9000.client_key ))
     etcd:
+      machines: (( grab meta.cf.etcd.servers ))
       ca_cert: (( grab meta.cf.etcd.ca_cert ))
       client_cert: (( grab meta.cf.etcd.client_cert ))
       client_key: (( grab meta.cf.etcd.client_key ))
