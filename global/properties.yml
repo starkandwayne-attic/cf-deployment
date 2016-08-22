@@ -788,3 +788,8 @@ properties:
     network_mtu: null
     persistent_image_list:
     - /var/vcap/packages/cflinuxfs2/rootfs
+  syslog_drain_binder:
+    etcd:
+      client_cert: (( grab meta.cf.etcd.client_cert ))
+      client_key:  (( grab meta.cf.etcd.client_key ))
+
