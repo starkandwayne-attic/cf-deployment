@@ -175,17 +175,6 @@ jobs:
   networks:
   - name: cf
     static_ips: (( static_ips(24) ))
-- name: loggregator_z1
-  instances: 1
-  .: (( inject meta.jobs.loggregator ))
-  properties:
-    doppler:
-      zone: z1
-    metron_agent:
-      zone: z1
-  resource_pool: warden
-  networks:
-  - name: cf
 - name: doppler_z1
   instances: 1
   .: (( inject meta.jobs.doppler ))

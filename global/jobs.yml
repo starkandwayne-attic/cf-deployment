@@ -296,19 +296,6 @@ meta:
                   name: dns_health_check
                   script: /var/vcap/jobs/dea_next/bin/dns_health_check
                   status: passing
-    loggregator:
-      templates:
-      - name: doppler
-        release: cf
-      - name: syslog_drain_binder
-        release: cf
-      - name: metron_agent
-        release: cf
-      - name: toolbelt
-        release: toolbelt
-      - name: toolbelt-quick
-        release: toolbelt
-      update: {}
     doppler:
       templates:
       - name: doppler

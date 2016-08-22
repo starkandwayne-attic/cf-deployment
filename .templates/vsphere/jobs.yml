@@ -225,28 +225,6 @@ jobs:
     dea_next:
       zone: z2
   resource_pool: runner_z2
-- name: loggregator_z1
-  instances: 1
-  .: (( inject meta.jobs.loggregator ))
-  networks:
-  - name: cf1
-  properties:
-    metron_agent:
-      zone: z1
-    doppler:
-      zone: z1
-  resource_pool: small_z1
-- name: loggregator_z2
-  instances: 1
-  .: (( inject meta.jobs.loggregator ))
-  networks:
-  - name: cf2
-  properties:
-    metron_agent:
-      zone: z2
-    doppler:
-      zone: z2
-  resource_pool: small_z2
 - name: doppler_z1
   instances: 1
   .: (( inject meta.jobs.doppler ))
