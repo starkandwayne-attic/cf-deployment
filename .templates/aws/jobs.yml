@@ -165,46 +165,6 @@ jobs:
     metron_agent:
       zone: z1
   resource_pool: small_z1
-- name: hm9000_z1
-  instances: 1
-  .: (( inject meta.jobs.hm9000 ))
-  networks:
-  - name: cf1
-  properties:
-    metron_agent:
-      zone: z1
-  resource_pool: small_z1
-- name: hm9000_z2
-  instances: 1
-  .: (( inject meta.jobs.hm9000 ))
-  networks:
-  - name: cf2
-  properties:
-    metron_agent:
-      zone: z2
-  resource_pool: small_z2
-- name: runner_z1
-  instances: 1
-  .: (( inject meta.jobs.runner ))
-  networks:
-  - name: runner1
-  properties:
-    metron_agent:
-      zone: z1
-    dea_next:
-      zone: z1
-  resource_pool: runner_z1
-- name: runner_z2
-  instances: 1
-  .: (( inject meta.jobs.runner ))
-  networks:
-  - name: runner2
-  properties:
-    metron_agent:
-      zone: z2
-    dea_next:
-      zone: z2
-  resource_pool: runner_z2
 - name: doppler_z1
   instances: 1
   .: (( inject meta.jobs.doppler ))

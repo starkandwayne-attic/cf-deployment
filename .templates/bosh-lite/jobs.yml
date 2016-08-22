@@ -154,27 +154,6 @@ jobs:
   resource_pool: warden
   networks:
   - name: cf
-- name: hm9000_z1
-  instances: 1
-  .: (( inject meta.jobs.hm9000 ))
-  properties:
-    metron_agent:
-      zone: z1
-  resource_pool: warden
-  networks:
-  - name: cf
-- name: runner_z1
-  instances: 1
-  .: (( inject meta.jobs.runner ))
-  properties:
-    dea_next:
-      zone: z1
-    metron_agent:
-      zone: z1
-  resource_pool: warden
-  networks:
-  - name: cf
-    static_ips: (( static_ips(24) ))
 - name: doppler_z1
   instances: 1
   .: (( inject meta.jobs.doppler ))

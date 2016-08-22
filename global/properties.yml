@@ -72,18 +72,6 @@ meta:
       ca_cert: (( vault meta.vault_prefix "/certs/internal_ca:cert" ))
       encryption_key: (( vault meta.vault_prefix "/creds/cc:db_encryption_key" ))
 
-    dea:
-      client_cert: (( vault meta.vault_prefix "/certs/dea_client:cert" ))
-      client_key: (( vault meta.vault_prefix "/certs/dea_client:key" ))
-      ca_cert: (( vault meta.vault_prefix "/certs/internal_ca:cert" ))
-      server_cert: (( vault meta.vault_prefix "/certs/dea_server:cert" ))
-      server_key: (( vault meta.vault_prefix "/certs/dea_server:key" ))
-    hm9000:
-      client_cert: (( vault meta.vault_prefix "/certs/hm9000_client:cert" ))
-      client_key: (( vault meta.vault_prefix "/certs/hm9000_client:key" ))
-      ca_cert: (( vault meta.vault_prefix "/certs/internal_ca:cert" ))
-      server_cert: (( vault meta.vault_prefix "/certs/hm9000_server:cert" ))
-      server_key: (( vault meta.vault_prefix "/certs/hm9000_server:key" ))
     gorouter:
       servers: (( param "Enter the IPs of the gorouters" ))
     etcd:
@@ -178,7 +166,6 @@ properties:
     client_max_body_size: 15M
     db_encryption_key: (( grab meta.cf.creds.cc.db_encryption_key ))
     db_logging_level: debug2
-    dea_use_https: true
     default_app_disk_in_mb: 1024
     default_app_memory: 256
     default_buildpacks:
@@ -386,36 +373,6 @@ properties:
     - (( grab meta.cf.consul.encryption_key ))
     server_cert: (( grab meta.cf.consul.server_cert ))
     server_key: (( grab meta.cf.consul.server_key ))
-  dea_next:
-    advertise_interval_in_seconds: 5
-    allow_host_access: null
-    allow_networks: []
-    ca_cert: (( grab meta.cf.dea.ca_cert ))
-    client_cert: (( grab meta.cf.dea.client_cert ))
-    client_key: (( grab meta.cf.dea.client_key ))
-    default_health_check_timeout: 60
-    deny_networks: []
-    directory_server_protocol: https
-    disk_mb: 32768
-    disk_overcommit_factor: 3
-    enable_ssl: true
-    evacuation_bail_out_time_in_seconds: 0
-    heartbeat_interval_in_seconds: 10
-    instance_bandwidth_limit: null
-    instance_disk_inode_limit: 200000
-    kernel_network_tuning_enabled: false
-    logging_level: debug
-    memory_mb: 8192
-    memory_overcommit_factor: null
-    mtu: null
-    post_setup_hook: null
-    rlimit_core: 0
-    server_cert: (( grab meta.cf.dea.server_cert ))
-    server_key: (( grab meta.cf.dea.server_key ))
-    staging_bandwidth_limit: null
-    staging_disk_inode_limit: 200000
-    staging_disk_limit_mb: 6144
-    staging_memory_limit_mb: 1024
   description: null
   disk_quota_enabled: false
   domain: (( grab meta.cf.base_domain ))
@@ -461,21 +418,6 @@ properties:
       password: (( grab meta.cf.nats.pass ))
       username: (( grab meta.cf.nats.user ))
   ha_proxy: null
-  hm9000:
-    ca_cert: (( grab meta.cf.hm9000.ca_cert ))
-    client_cert: (( grab meta.cf.hm9000.client_cert ))
-    client_key: (( grab meta.cf.hm9000.client_key ))
-    etcd:
-      machines: (( grab meta.cf.etcd.servers ))
-      ca_cert: (( grab meta.cf.etcd.ca_cert ))
-      client_cert: (( grab meta.cf.etcd.client_cert ))
-      client_key: (( grab meta.cf.etcd.client_key ))
-      machines: (( grab meta.cf.etcd.servers ))
-      require_ssl: true
-    port: 5155
-    server_cert: (( grab meta.cf.hm9000.server_cert ))
-    server_key: (( grab meta.cf.hm9000.server_key ))
-    url: (( concat "https://hm9000." meta.cf.system_domain ))
   logger_endpoint: null
   loggregator:
     blacklisted_syslog_ranges: null
