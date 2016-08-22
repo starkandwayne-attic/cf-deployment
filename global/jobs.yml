@@ -75,39 +75,8 @@ meta:
       - name: toolbelt-quick
         release: toolbelt
       update: {}
-    nfs:
-      persistent_disk_pool: (( param "Specify the persistent disk pool for nfs" ))
-      templates:
-      - name: consul_agent
-        release: cf
-      - name: debian_nfs_server
-        release: cf
-      - name: metron_agent
-        release: cf
-      - name: blobstore
-        release: cf
-      - name: route_registrar
-        release: cf
-      - name: toolbelt
-        release: toolbelt
-      - name: toolbelt-quick
-        release: toolbelt
-      update: {}
-      properties:
-        consul:
-          agent:
-            services:
-              blobstore: {}
-        route_registrar:
-          routes:
-          - name: blobstore
-            port: 80
-            registration_interval: 20s
-            tags:
-              component: blobstore
-            uris:
-            - (( concat "blobstore." meta.cf.system_domain ))
     blobstore:
+      persistent_disk_pool: (( param "Specify the persistent disk pool for blobstore" ))
       templates:
       - name: consul_agent
         release: cf
@@ -131,7 +100,7 @@ meta:
         route_registrar:
           routes:
           - name: blobstore
-            port: 80
+            port: 8080
             registration_interval: 20s
             tags:
               component: blobstore

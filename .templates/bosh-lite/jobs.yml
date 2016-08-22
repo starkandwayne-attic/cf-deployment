@@ -5,8 +5,6 @@ meta:
       persistent_disk_pool: small
     etcd:
       persistent_disk_pool: large
-    nfs:
-      persistent_disk_pool: ~ # not used
     blobstore:
       persistent_disk_pool: xlarge
     postgres:

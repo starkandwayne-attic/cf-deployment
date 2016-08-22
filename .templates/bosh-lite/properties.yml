@@ -29,6 +29,7 @@ meta:
 
     blobstore_config:
       blobstore_type: webdav
+      fog_aws_storage_options: null
       fog_connection: ~
 
   skip_ssl_validation: true
