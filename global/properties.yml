@@ -451,7 +451,7 @@ properties:
     server_key: (( grab meta.cf.etcd.server_key ))
     peer_require_ssl: true
     require_ssl: true
-    cluster: (( grab.meta.cf.etcd.cluster ))
+    cluster: (( grab meta.cf.etcd.cluster ))
   etcd_metrics_server:
     nats:
       machines: (( grab meta.cf.nats.servers ))
@@ -811,7 +811,7 @@ properties:
       nats:
         machines: (( grab meta.cf.nats.servers ))
         password: (( grab meta.cf.nats.pass ))
-        username: (( grab meta.cf.nats.user ))
+        user:     (( grab meta.cf.nats.user ))
         port: 4222
     ssh_proxy:
       bbs: (( grab meta.cf.bbs ))
