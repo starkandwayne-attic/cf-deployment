@@ -199,7 +199,7 @@ properties:
     - services
     - load_balancer
     - user_bosh_deployments
-    default_to_diego_backend: false
+    default_to_diego_backend: true
     development_mode: false
     directories: null
     disable_custom_buildpacks: false
