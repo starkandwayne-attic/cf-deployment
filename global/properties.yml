@@ -770,7 +770,7 @@ properties:
       enable_diego_auth: true
       host_key: (( vault meta.vault_prefix "/app_ssh:private" ))
       uaa_secret: (( grab meta.cf.creds.uaa.ssh_proxy_secret ))
-      uaa_token_url: (( concat "https://uaa." meta.cf.base_domain "/oauth/token" ))
+      uaa_token_url: (( concat "https://uaa." meta.cf.system_domain "/oauth/token" ))
     ssl:
       skip_cert_verify: (( grab meta.skip_ssl_validation ))
   garden:
