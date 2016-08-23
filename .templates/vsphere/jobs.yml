@@ -245,7 +245,6 @@ jobs:
     metron_agent:
       zone: z2
   resource_pool: router_z2
-
 - name: database_z1
   instances: 1
   .: (( inject meta.jobs.database ))
