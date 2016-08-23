@@ -383,8 +383,8 @@ properties:
     message_drain_buffer_size: null
     port: 4443
     etcd:
-      client_cert: (( grab meta.cf.etcd.client_cert ))
-      client_key:  (( grab meta.cf.etcd.client_key ))
+      client_cert: null
+      client_key:  null
     tls:
       enable: null
       port: null
@@ -420,14 +420,15 @@ properties:
   ha_proxy: null
   logger_endpoint: null
   loggregator:
+    dropsonde_incoming_port: null
     blacklisted_syslog_ranges: null
     debug: false
     etcd:
-      ca_cert: (( grab meta.cf.etcd.ca_cert ))
+      ca_cert: null
       machines: (( grab meta.cf.etcd.servers ))
-      client_cert: (( grab meta.cf.etcd.client_cert ))
-      client_key: (( grab meta.cf.etcd.client_key ))
-      require_ssl: true
+      client_cert: null
+      client_key: null
+      require_ssl: null
     maxRetainedLogMessages: 100
     outgoing_dropsonde_port: 8081
     tls:
@@ -471,8 +472,8 @@ properties:
     dropsonde_incoming_port: null
     enable_buffer: null
     etcd:
-      client_cert: (( grab meta.cf.etcd.client_cert ))
-      client_key:  (( grab meta.cf.etcd.client_key ))
+      client_cert: null
+      client_key: null
     preferred_protocol: null
     protocols: null
     tls:
@@ -790,6 +791,5 @@ properties:
     - /var/vcap/packages/cflinuxfs2/rootfs
   syslog_drain_binder:
     etcd:
-      client_cert: (( grab meta.cf.etcd.client_cert ))
-      client_key:  (( grab meta.cf.etcd.client_key ))
-
+      client_cert: null
+      client_key:  null
