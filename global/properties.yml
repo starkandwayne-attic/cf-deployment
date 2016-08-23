@@ -128,9 +128,23 @@ properties:
     admin_user: (( grab meta.cf.creds.admin.user ))
     api: (( concat "https://api." meta.cf.system_domain ))
     apps_domain: (( grab meta.cf.apps_domains.0 ))
+    system_domain: (( grab meta.cf.system_domain ))
     nodes: 1
     skip_ssl_validation: (( grab meta.skip_ssl_validation ))
     use_http: true
+    backend: diego
+    include_backend_compatibility: true
+    include_internet_dependent: true
+    include_diego_docker: true
+    include_diego_ssh: true
+    include_logging: true
+    include_route_services: false
+    include_routing: true
+    include_security_groups: true
+    include_services: true
+    include_sso: true
+    skip_diego_unsupported_tests: true
+
   app_domains: (( grab meta.cf.apps_domains ))
   app_ssh:
     host_key_fingerprint: (( vault meta.vault_prefix "/app_ssh:fingerprint" ))
