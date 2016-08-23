@@ -397,21 +397,7 @@ properties:
   dropsonde:
     enabled: true
   etcd:
-    advertise_urls_dns_suffix: etcd.service.cf.internal
-    ca_cert: (( grab meta.cf.etcd.ca_cert ))
-    client_cert: (( grab meta.cf.etcd.client_cert ))
-    client_key: (( grab meta.cf.etcd.client_key ))
-    election_timeout_in_milliseconds: null
-    heartbeat_interval_in_milliseconds: null
     machines: (( grab meta.cf.etcd.servers ))
-    peer_ca_cert: (( grab meta.cf.etcd.ca_cert ))
-    peer_cert: (( grab meta.cf.etcd.peer_cert ))
-    peer_key: (( grab meta.cf.etcd.peer_key ))
-    server_cert: (( grab meta.cf.etcd.server_cert ))
-    server_key: (( grab meta.cf.etcd.server_key ))
-    peer_require_ssl: true
-    require_ssl: true
-    cluster: (( grab meta.cf.etcd.cluster ))
   etcd_metrics_server:
     nats:
       machines: (( grab meta.cf.nats.servers ))

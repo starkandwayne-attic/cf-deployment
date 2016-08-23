@@ -67,6 +67,9 @@ meta:
         max_in_flight: 1
         serial: true
       properties:
+        etcd:
+          peer_require_ssl: false
+          require_ssl: false
         consul:
           agent:
             services:
@@ -301,6 +304,23 @@ meta:
     database:
       persistent_disk_pool: (( param "Specify the persistent disk pool for database" ))
       properties:
+        etcd:
+          advertise_urls_dns_suffix: etcd.service.cf.internal
+          ca_cert: (( grab meta.cf.etcd.ca_cert ))
+          client_cert: (( grab meta.cf.etcd.client_cert ))
+          client_key: (( grab meta.cf.etcd.client_key ))
+          cluster: (( grab meta.cf.etcd.cluster ))
+          election_timeout_in_milliseconds: null
+          heartbeat_interval_in_milliseconds: null
+          machines:
+          - etcd.service.cf.internal
+          peer_ca_cert: (( grab meta.cf.etcd.ca_cert ))
+          peer_cert: (( grab meta.cf.etcd.peer_cert ))
+          peer_key: (( grab meta.cf.etcd.peer_key ))
+          peer_require_ssl: true
+          require_ssl: true
+          server_cert: (( grab meta.cf.etcd.server_cert ))
+          server_key: (( grab meta.cf.etcd.server_key ))
         consul:
           agent:
             services:
