@@ -202,7 +202,7 @@ meta:
         release: toolbelt
       - name: toolbelt-quick
         release: toolbelt
-      update: {}
+      update: {serial: true}
       properties:
         consul:
           agent:
