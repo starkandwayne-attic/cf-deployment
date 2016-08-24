@@ -47,3 +47,9 @@ properties:
   blobstore: ~
   logger_endpoint:
     port: 4443
+
+  diego:
+    bbs:
+      sql:
+        db_driver: mysql
+        db_connection_string: (( concat meta.cf.diegodb.user ":" meta.cf.diegodb.pass "@tcp(" meta.cf.diegodb.host ":" meta.cf.diegodb.port ")/" meta.cf.diegodb.dbname ))
