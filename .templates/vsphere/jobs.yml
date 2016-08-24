@@ -294,7 +294,7 @@ jobs:
   instances: 1
   .: (( inject meta.jobs.cell ))
   networks:
-  - name: runner_z1
+  - name: runner1
   resource_pool: runner_z1
   properties:
     diego:
@@ -307,7 +307,7 @@ jobs:
   instances: 1
   .: (( inject meta.jobs.cell ))
   networks:
-  - name: runner_z2
+  - name: runner2
   resource_pool: runner_z2
   properties:
     diego:
