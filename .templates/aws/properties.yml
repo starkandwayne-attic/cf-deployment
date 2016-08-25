@@ -48,6 +48,9 @@ properties:
   logger_endpoint:
     port: 4443
 
+  ha_proxy:
+    ssl_pem: ""
+
   diego:
     bbs:
       sql:
