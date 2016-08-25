@@ -1,6 +1,6 @@
 ---
 meta:
-  elbs: (( param "What elbs will be in front of the ha_proxy nodes?" ))
+  elbs: (( param "What elbs will be in front of the gorouters?" ))
   azs:
     z1: (( param "What availability zone should the *_z1 vms be placed in?" ))
     z2: (( param "What availability zone should the *_z2 vms be placed in?" ))
@@ -31,7 +31,7 @@ meta:
           size: 8_000
         ephemeral_disk:
           size: 40_960
-    ha_proxy:
+    router:
       stemcell: (( grab meta.stemcell ))
       cloud_properties:
         instance_type: t2.medium
@@ -100,16 +100,16 @@ resource_pools:
     cloud_properties:
       availability_zone: (( grab meta.azs.z3 ))
 
-  - name: ha_proxy_z1
-    .: (( inject meta.resource_pools.ha_proxy ))
+  - name: router_z1
+    .: (( inject meta.resource_pools.router ))
     cloud_properties:
       availability_zone: (( grab meta.azs.z1 ))
-  - name: ha_proxy_z2
-    .: (( inject meta.resource_pools.ha_proxy ))
+  - name: router_z2
+    .: (( inject meta.resource_pools.router ))
     cloud_properties:
       availability_zone: (( grab meta.azs.z2 ))
-  - name: ha_proxy_z3
-    .: (( inject meta.resource_pools.ha_proxy ))
+  - name: router_z3
+    .: (( inject meta.resource_pools.router ))
     cloud_properties:
       availability_zone: (( grab meta.azs.z3 ))
 
