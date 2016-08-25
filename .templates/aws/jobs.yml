@@ -337,7 +337,7 @@ jobs:
   .: (( inject meta.jobs.access ))
   networks:
   - name: cf1
-  resource_pool: access_z1 
+  resource_pool: access_z1
   properties:
     metron_agent:
       zone: z1
