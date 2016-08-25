@@ -218,7 +218,7 @@ jobs:
   instances: 1
   .: (( inject meta.jobs.ha_proxy ))
   networks:
-  - name: router2
+  - name: router1
   properties:
     metron_agent:
       zone: z2
