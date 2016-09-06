@@ -4,6 +4,7 @@ meta:
     base_domain: (( param "Enter the Cloud Foundry base domain" ))
     apps_domains: [ (( concat "run." meta.cf.base_domain )) ]
     system_domain: (( concat "system." meta.cf.base_domain ))
+    directory_key_prefix: (( param "Enter the Cloud Foundry Blobstore Bucket directory Key Prefix" ))
     creds:
       admin:
         user: admin
@@ -175,7 +176,7 @@ properties:
     broker_client_timeout_seconds: 70
     buildpacks:
       .: (( inject meta.cf.blobstore_config ))
-      buildpack_directory_key: (( concat meta.cf.base_domain "-cc-buildpacks" ))
+      buildpack_directory_key: (( concat meta.cf.directory_key_prefix "-cc-buildpacks" ))
     bulk_api_password: (( grab meta.cf.creds.cc.bulk_api_password ))
     client_max_body_size: 15M
     db_encryption_key: (( grab meta.cf.creds.cc.db_encryption_key ))
@@ -219,7 +220,7 @@ properties:
     disable_custom_buildpacks: false
     droplets:
       .: (( inject meta.cf.blobstore_config ))
-      droplet_directory_key: (( concat meta.cf.base_domain "-cc-droplets" ))
+      droplet_directory_key: (( concat meta.cf.directory_key_prefix "-cc-droplets" ))
       max_staged_droplets_stored: null
     external_host: api
     external_port: 9022
@@ -279,7 +280,7 @@ properties:
         record_sql: obfuscated
     packages:
       .: (( inject meta.cf.blobstore_config ))
-      app_package_directory_key: (( concat meta.cf.base_domain "-cc-packages" ))
+      app_package_directory_key: (( concat meta.cf.directory_key_prefix "-cc-packages" ))
       max_package_size: 1073741824
       max_valid_packages_stored: null
     quota_definitions:
@@ -293,7 +294,7 @@ properties:
     reserved_private_domains: null
     resource_pool:
       .: (( inject meta.cf.blobstore_config ))
-      resource_directory_key: (( concat meta.cf.base_domain "-cc-resources" ))
+      resource_directory_key: (( concat meta.cf.directory_key_prefix "-cc-resources" ))
     security_event_logging:
       enabled: null
     security_group_definitions:
@@ -792,4 +793,4 @@ properties:
   syslog_drain_binder:
     etcd:
       client_cert: null
-      client_key:  null
+
