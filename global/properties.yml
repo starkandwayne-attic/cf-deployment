@@ -654,7 +654,7 @@ properties:
     nsync:
       bbs: (( grab meta.cf.bbs ))
       cc:
-        base_url: (( concat "https://api." meta.cf.base_domain ))
+        base_url: (( concat "https://api." meta.cf.system_domain ))
         basic_auth_password: (( grab meta.cf.creds.cc.internal_api_password ))
         basic_auth_username: (( grab meta.cf.creds.cc.internal_api_user ))
       diego_privileged_containers: null
@@ -676,7 +676,7 @@ properties:
         basic_auth_username: (( grab meta.cf.creds.cc.internal_api_user ))
       dropsonde_port: null
       log_level: null
-      traffic_controller_url: (( concat "wss://doppler." meta.cf.base_domain ":443" ))
+      traffic_controller_url: (( concat "wss://doppler." meta.cf.system_domain ":443" ))
   cflinuxfs2-rootfs:
     trusted_certs: null
   diego:
