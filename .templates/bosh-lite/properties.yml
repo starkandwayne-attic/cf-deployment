@@ -10,6 +10,9 @@ meta:
       servers: (( grab jobs.router_z1.networks.cf.static_ips ))
     etcd:
       servers: (( grab jobs.etcd_z1.networks.cf.static_ips ))
+      cluster:
+      - instances: 1
+        name: database_z1
     nats:
       servers: (( grab jobs.nats_z1.networks.cf.static_ips ))
 
@@ -27,8 +30,16 @@ meta:
       user: ccadmin
       port: (( grab properties.postgres.config.port ))
 
+    diegodb:
+      host: (( grab jobs.postgres_z1.networks.cf.static_ips.0 ))
+      scheme: postgres
+      pass: (( vault meta.vault_prefix "/diegodb:password" ))
+      user: diegoadmin
+      port: (( grab properties.postgres.config.port ))
+
     blobstore_config:
       blobstore_type: webdav
+      fog_aws_storage_options: null
       fog_connection: ~
 
   skip_ssl_validation: true
@@ -49,11 +60,19 @@ properties:
       extensions:
       - citext
       - pgcrypto
+    - name: (( grab meta.cf.diegodb.dbname ))
+      users:
+      - (( grab meta.cf.diegodb.user ))
+      extensions:
+      - citext
+      - pgcrypto
     users:
     - username: (( grab meta.cf.uaadb.user ))
       password: (( grab meta.cf.uaadb.pass ))
     - username: (( grab meta.cf.ccdb.user ))
       password: (( grab meta.cf.ccdb.pass ))
+    - username: (( grab meta.cf.diegodb.user ))
+      password: (( grab meta.cf.diegodb.pass ))
   postgres:
     config:
       port: 5432

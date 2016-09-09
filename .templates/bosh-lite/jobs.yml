@@ -5,12 +5,12 @@ meta:
       persistent_disk_pool: small
     etcd:
       persistent_disk_pool: large
-    nfs:
-      persistent_disk_pool: ~ # not used
     blobstore:
       persistent_disk_pool: xlarge
     postgres:
       persistent_disk_pool: medium
+    database:
+      persistent_disk_pool: small
 
 jobs:
 - name: consul_z1
@@ -154,38 +154,6 @@ jobs:
   resource_pool: warden
   networks:
   - name: cf
-- name: hm9000_z1
-  instances: 1
-  .: (( inject meta.jobs.hm9000 ))
-  properties:
-    metron_agent:
-      zone: z1
-  resource_pool: warden
-  networks:
-  - name: cf
-- name: runner_z1
-  instances: 1
-  .: (( inject meta.jobs.runner ))
-  properties:
-    dea_next:
-      zone: z1
-    metron_agent:
-      zone: z1
-  resource_pool: warden
-  networks:
-  - name: cf
-    static_ips: (( static_ips(24) ))
-- name: loggregator_z1
-  instances: 1
-  .: (( inject meta.jobs.loggregator ))
-  properties:
-    doppler:
-      zone: z1
-    metron_agent:
-      zone: z1
-  resource_pool: warden
-  networks:
-  - name: cf
 - name: doppler_z1
   instances: 1
   .: (( inject meta.jobs.doppler ))
@@ -203,8 +171,6 @@ jobs:
   properties:
     metron_agent:
       zone: z1
-    traffic_controller:
-      zone: z1
   resource_pool: warden
   networks:
   - name: cf
@@ -218,6 +184,64 @@ jobs:
   networks:
   - name: cf
     static_ips: (( static_ips(20) ))
+- name: database_z1
+  instances: 1
+  .: (( inject meta.jobs.database ))
+  properties:
+    metron_agent:
+      zone: z1
+  resource_pool: warden
+  networks:
+  - name: cf
+- name: brain_z1
+  instances: 1
+  .: (( inject meta.jobs.brain ))
+  properties:
+    metron_agent:
+      zone: z1
+  resource_pool: warden
+  networks:
+  - name: cf
+- name: cell_z1
+  instances: 1
+  .: (( inject meta.jobs.cell ))
+  properties:
+    diego:
+      rep:
+        use_azure_fault_domains: null
+        zone: z1
+    metron_agent:
+      zone: z1
+  resource_pool: warden
+  networks:
+  - name: cf
+- name: cc_bridge_z1
+  instances: 1
+  .: (( inject meta.jobs.cc_bridge ))
+  properties:
+    metron_agent:
+      zone: z1
+  resource_pool: warden
+  networks:
+  - name: cf
+- name: route_emitter_z1
+  instances: 1
+  .: (( inject meta.jobs.route_emitter ))
+  properties:
+    metron_agent:
+      zone: z1
+  resource_pool: warden
+  networks:
+  - name: cf
+- name: access_z1
+  instances: 1
+  .: (( inject meta.jobs.access ))
+  properties:
+    metron_agent:
+      zone: z1
+  resource_pool: warden
+  networks:
+  - name: cf
 - name: acceptance_tests
   networks:
   - name: cf
