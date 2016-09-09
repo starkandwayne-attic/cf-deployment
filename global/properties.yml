@@ -655,7 +655,7 @@ properties:
     nsync:
       bbs: (( grab meta.cf.bbs ))
       cc:
-        base_url: http://cloud-controller-ng.service.cf.internal:9022
+        base_url: (( concat "https://api." meta.cf.system_domain ))
         basic_auth_password: (( grab meta.cf.creds.cc.internal_api_password ))
         basic_auth_username: (( grab meta.cf.creds.cc.internal_api_user ))
       diego_privileged_containers: null
