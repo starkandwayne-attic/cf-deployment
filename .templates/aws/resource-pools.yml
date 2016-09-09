@@ -1,6 +1,7 @@
 ---
 meta:
   elbs: (( param "What elbs will be in front of the gorouters?" ))
+  ssh_elbs: (( param "What elbs will be in front of the ssh-proxy (access_z*) nodes?" ))
   azs:
     z1: (( param "What availability zone should the *_z1 vms be placed in?" ))
     z2: (( param "What availability zone should the *_z2 vms be placed in?" ))
@@ -40,6 +41,15 @@ meta:
         ephemeral_disk:
           size: 10_240
         elbs: (( grab meta.elbs ))
+    access:
+      stemcell: (( grab meta.stemcell ))
+      cloud_properties:
+        instance_type: t2.medium
+        root_disk:
+          size: 8_000
+        ephemeral_disk:
+          size: 10_240
+        elbs: (( grab meta.ssh_elbs ))
     runner:
       stemcell: (( grab meta.stemcell ))
       cloud_properties:
@@ -110,6 +120,19 @@ resource_pools:
       availability_zone: (( grab meta.azs.z2 ))
   - name: router_z3
     .: (( inject meta.resource_pools.router ))
+    cloud_properties:
+      availability_zone: (( grab meta.azs.z3 ))
+
+  - name: access_z1
+    .: (( inject meta.resource_pools.access ))
+    cloud_properties:
+      availability_zone: (( grab meta.azs.z1 ))
+  - name: access_z2
+    .: (( inject meta.resource_pools.access ))
+    cloud_properties:
+      availability_zone: (( grab meta.azs.z2 ))
+  - name: access_z3
+    .: (( inject meta.resource_pools.access ))
     cloud_properties:
       availability_zone: (( grab meta.azs.z3 ))
 

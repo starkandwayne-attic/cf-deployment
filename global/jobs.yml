@@ -51,6 +51,8 @@ meta:
     etcd:
       persistent_disk_pool: (( param "Specify the persistent disk pool for etcd" ))
       templates:
+      - name: consul_agent
+        release: cf
       - name: etcd
         release: cf
       - name: etcd_metrics_server
@@ -64,6 +66,14 @@ meta:
       update:
         max_in_flight: 1
         serial: true
+      properties:
+        etcd:
+          peer_require_ssl: false
+          require_ssl: false
+        consul:
+          agent:
+            services:
+              etcd: {}
     stats:
       templates:
       - name: collector
@@ -75,39 +85,8 @@ meta:
       - name: toolbelt-quick
         release: toolbelt
       update: {}
-    nfs:
-      persistent_disk_pool: (( param "Specify the persistent disk pool for nfs" ))
-      templates:
-      - name: consul_agent
-        release: cf
-      - name: debian_nfs_server
-        release: cf
-      - name: metron_agent
-        release: cf
-      - name: blobstore
-        release: cf
-      - name: route_registrar
-        release: cf
-      - name: toolbelt
-        release: toolbelt
-      - name: toolbelt-quick
-        release: toolbelt
-      update: {}
-      properties:
-        consul:
-          agent:
-            services:
-              blobstore: {}
-        route_registrar:
-          routes:
-          - name: blobstore
-            port: 80
-            registration_interval: 20s
-            tags:
-              component: blobstore
-            uris:
-            - (( concat "blobstore." meta.cf.system_domain ))
     blobstore:
+      persistent_disk_pool: (( param "Specify the persistent disk pool for blobstore" ))
       templates:
       - name: consul_agent
         release: cf
@@ -131,7 +110,7 @@ meta:
         route_registrar:
           routes:
           - name: blobstore
-            port: 80
+            port: 8080
             registration_interval: 20s
             tags:
               component: blobstore
@@ -223,7 +202,7 @@ meta:
         release: toolbelt
       - name: toolbelt-quick
         release: toolbelt
-      update: {}
+      update: {serial: true}
       properties:
         consul:
           agent:
@@ -265,74 +244,6 @@ meta:
       update: {}
       properties:
         nfs_server: (( grab properties.nfs_server ))
-    hm9000:
-      templates:
-      - name: consul_agent
-        release: cf
-      - name: hm9000
-        release: cf
-      - name: metron_agent
-        release: cf
-      - name: route_registrar
-        release: cf
-      - name: toolbelt
-        release: toolbelt
-      - name: toolbelt-quick
-        release: toolbelt
-      update: {}
-      properties:
-        consul:
-          agent:
-            services:
-              hm9000: {}
-        route_registrar:
-          routes:
-          - name: hm9000
-            port: 5155
-            registration_interval: 20s
-            tags:
-              component: HM9K
-            uris:
-            - (( concat "hm9000." meta.cf.system_domain ))
-    runner:
-      templates:
-      - name: consul_agent
-        release: cf
-      - name: dea_next
-        release: cf
-      - name: dea_logging_agent
-        release: cf
-      - name: metron_agent
-        release: cf
-      - name: toolbelt
-        release: toolbelt
-      - name: toolbelt-quick
-        release: toolbelt
-      update:
-        max_in_flight: 1
-      properties:
-        consul:
-          agent:
-            services:
-              dea:
-                check:
-                  interval: 5m
-                  name: dns_health_check
-                  script: /var/vcap/jobs/dea_next/bin/dns_health_check
-                  status: passing
-    loggregator:
-      templates:
-      - name: doppler
-        release: cf
-      - name: syslog_drain_binder
-        release: cf
-      - name: metron_agent
-        release: cf
-      - name: toolbelt
-        release: toolbelt
-      - name: toolbelt-quick
-        release: toolbelt
-      update: {}
     doppler:
       templates:
       - name: doppler
@@ -390,6 +301,129 @@ meta:
           agent:
             services:
               gorouter: {}
+    database:
+      persistent_disk_pool: (( param "Specify the persistent disk pool for database" ))
+      properties:
+        etcd:
+          advertise_urls_dns_suffix: etcd.service.cf.internal
+          ca_cert: (( grab meta.cf.etcd.ca_cert ))
+          client_cert: (( grab meta.cf.etcd.client_cert ))
+          client_key: (( grab meta.cf.etcd.client_key ))
+          cluster: (( grab meta.cf.etcd.cluster ))
+          election_timeout_in_milliseconds: null
+          heartbeat_interval_in_milliseconds: null
+          machines:
+          - etcd.service.cf.internal
+          peer_ca_cert: (( grab meta.cf.etcd.ca_cert ))
+          peer_cert: (( grab meta.cf.etcd.peer_cert ))
+          peer_key: (( grab meta.cf.etcd.peer_key ))
+          peer_require_ssl: true
+          require_ssl: true
+          server_cert: (( grab meta.cf.etcd.server_cert ))
+          server_key: (( grab meta.cf.etcd.server_key ))
+        consul:
+          agent:
+            services:
+              etcd: {}
+      templates:
+      - name: consul_agent
+        release: cf
+      - name: etcd
+        release: cf
+      - name: bbs
+        release: diego
+      - name: metron_agent
+        release: cf
+      - name: toolbelt
+        release: toolbelt
+      - name: toolbelt-quick
+        release: toolbelt
+      update:
+        max_in_flight: 1
+        serial: true
+    brain:
+      templates:
+      - name: consul_agent
+        release: cf
+      - name: auctioneer
+        release: diego
+      - name: metron_agent
+        release: cf
+      - name: toolbelt
+        release: toolbelt
+      - name: toolbelt-quick
+        release: toolbelt
+      update:
+        max_in_flight: 1
+        serial: true
+    cell:
+      templates:
+      - name: consul_agent
+        release: cf
+      - name: rep
+        release: diego
+      - name: garden
+        release: garden-linux
+      - name: cflinuxfs2-rootfs-setup
+        release: cflinuxfs2-rootfs
+      - name: metron_agent
+        release: cf
+      - name: toolbelt
+        release: toolbelt
+      - name: toolbelt-quick
+        release: toolbelt
+      update:
+        max_in_flight: 1
+    cc_bridge:
+      templates:
+      - name: consul_agent
+        release: cf
+      - name: stager
+        release: cf
+      - name: nsync
+        release: cf
+      - name: tps
+        release: cf
+      - name: cc_uploader
+        release: cf
+      - name: metron_agent
+        release: cf
+      - name: toolbelt
+        release: toolbelt
+      - name: toolbelt-quick
+        release: toolbelt
+      update:
+        max_in_flight: 1
+    route_emitter:
+      templates:
+      - name: consul_agent
+        release: cf
+      - name: route_emitter
+        release: diego
+      - name: metron_agent
+        release: cf
+      - name: toolbelt
+        release: toolbelt
+      - name: toolbelt-quick
+        release: toolbelt
+      update:
+        max_in_flight: 1
+    access:
+      templates:
+      - name: consul_agent
+        release: cf
+      - name: ssh_proxy
+        release: diego
+      - name: metron_agent
+        release: cf
+      - name: file_server
+        release: diego
+      - name: toolbelt
+        release: toolbelt
+      - name: toolbelt-quick
+        release: toolbelt
+      update:
+        max_in_flight: 1
     errand:
       lifecycle: errand
 

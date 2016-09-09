@@ -7,6 +7,13 @@ meta:
       servers: (( grab jobs.router_z1.networks.router1.static_ips jobs.router_z2.networks.router2.static_ips ))
     etcd:
       servers: (( grab jobs.etcd_z1.networks.cf1.static_ips jobs.etcd_z2.networks.cf2.static_ips jobs.etcd_z3.networks.cf3.static_ips ))
+      cluster:
+      - instances: 1
+        name: database_z1
+      - instances: 1
+        name: database_z2
+      - instances: 1
+        name: database_z3
     nats:
       servers: (( grab jobs.nats_z1.networks.cf1.static_ips jobs.nats_z2.networks.cf2.static_ips ))
     db:
@@ -25,10 +32,17 @@ meta:
       user: ccadmin
       port: (( grab properties.postgres.config.port ))
 
+    diegodb:
+      host: (( grab jobs.postgres_z1.networks.cf1.static_ips.0 ))
+      scheme: postgres
+      pass: (( vault meta.vault_prefix "/diegodb:password" ))
+      user: diegoadmin
+      port: (( grab properties.postgres.config.port ))
 
     blobstore_config:
       blobstore_type: fog
       webdav_config: ~
+      fog_aws_storage_options: null
       fog_connection:
         provider: AWS
         aws_access_key_id: (( param "What is the access key id for the blobstore S3 buckets?" ))
@@ -55,11 +69,19 @@ properties:
       extensions:
       - citext
       - pgcrypto
+    - name: (( grab meta.cf.diegodb.dbname ))
+      users:
+      - (( grab meta.cf.diegodb.user ))
+      extensions:
+      - citext
+      - pgcrypto
     users:
     - username: (( grab meta.cf.uaadb.user ))
       password: (( grab meta.cf.uaadb.pass ))
     - username: (( grab meta.cf.ccdb.user ))
       password: (( grab meta.cf.ccdb.pass ))
+    - username: (( grab meta.cf.diegodb.user ))
+      password: (( grab meta.cf.diegodb.pass ))
   postgres:
     config:
       port: 5432
