@@ -1,0 +1,152 @@
+---
+meta:
+  target_pool: (( param "What target pool will be in front of the gorouters?" ))
+  target_pool_ssh: (( param "What target pool will be in front of the ssh-proxy (access_z*) nodes?" ))
+  google:
+    zones:
+      z1: (( param "Define the z1 Google zone" ))
+      z2: (( param "Define the z2 Google zone" ))
+      z3: (( param "Define the z3 Google zone" ))
+
+  resource_pools:
+    small:
+      stemcell: (( grab meta.stemcell ))
+      cloud_properties:
+        machine_type: n1-standard-1
+        zone: (( grab meta.google.zones.z1 ))
+        root_disk_size_gb: 10
+        root_disk_type: pd-standard
+    medium:
+      stemcell: (( grab meta.stemcell ))
+      cloud_properties:
+        machine_type: n1-standard-2
+        zone: (( grab meta.google.zones.z1 ))
+        root_disk_size_gb: 10
+        root_disk_type: pd-standard
+    large:
+      stemcell: (( grab meta.stemcell ))
+      cloud_properties:
+        machine_type: n1-standard-4
+        zone: (( grab meta.google.zones.z1 ))
+        root_disk_size_gb: 40
+        root_disk_type: pd-standard
+    router:
+      stemcell: (( grab meta.stemcell ))
+      cloud_properties:
+        machine_type: n1-standard-2
+        zone: (( grab meta.google.zones.z1 ))
+        root_disk_size_gb: 10
+        root_disk_type: pd-standard
+        target_pool: (( grab meta.target_pool ))
+    access:
+      stemcell: (( grab meta.stemcell ))
+      cloud_properties:
+        machine_type: n1-standard-1
+        zone: (( grab meta.google.zones.z1 ))
+        root_disk_size_gb: 10
+        root_disk_type: pd-standard
+        target_pool: (( grab meta.target_pool_ssh ))
+    runner:
+      stemcell: (( grab meta.stemcell ))
+      cloud_properties:
+        machine_type: n1-standard-8
+        zone: (( grab meta.google.zones.z1 ))
+        root_disk_size_gb: 100
+        root_disk_type: pd-ssd
+
+resource_pools:
+  - name: errand
+    stemcell: (( grab meta.stemcell ))
+    cloud_properties:
+      machine_type: n1-standard-1
+      zone: (( grab meta.google.zones.z1 ))
+      root_disk_size_gb: 10
+      root_disk_type: pd-standard
+
+  - name: small_z1
+    .: (( inject meta.resource_pools.small ))
+    cloud_properties:
+      zone: (( grab meta.google.zones.z1 ))
+  - name: small_z2
+    .: (( inject meta.resource_pools.small ))
+    cloud_properties:
+      zone: (( grab meta.google.zones.z2 ))
+  - name: small_z3
+    .: (( inject meta.resource_pools.small ))
+    cloud_properties:
+      zone: (( grab meta.google.zones.z3 ))
+
+  - name: medium_z1
+    .: (( inject meta.resource_pools.medium ))
+    cloud_properties:
+      zone: (( grab meta.google.zones.z1 ))
+  - name: medium_z2
+    .: (( inject meta.resource_pools.medium ))
+    cloud_properties:
+      zone: (( grab meta.google.zones.z2 ))
+  - name: medium_z3
+    .: (( inject meta.resource_pools.medium ))
+    cloud_properties:
+      zone: (( grab meta.google.zones.z3 ))
+
+  - name: large_z1
+    .: (( inject meta.resource_pools.large ))
+    cloud_properties:
+      zone: (( grab meta.google.zones.z1 ))
+  - name: large_z2
+    .: (( inject meta.resource_pools.large ))
+    cloud_properties:
+      zone: (( grab meta.google.zones.z2 ))
+  - name: large_z3
+    .: (( inject meta.resource_pools.large ))
+    cloud_properties:
+      zone: (( grab meta.google.zones.z3 ))
+
+  - name: router_z1
+    .: (( inject meta.resource_pools.router ))
+    cloud_properties:
+      zone: (( grab meta.google.zones.z1 ))
+  - name: router_z2
+    .: (( inject meta.resource_pools.router ))
+    cloud_properties:
+      zone: (( grab meta.google.zones.z2 ))
+  - name: router_z3
+    .: (( inject meta.resource_pools.router ))
+    cloud_properties:
+      zone: (( grab meta.google.zones.z3 ))
+
+  - name: access_z1
+    .: (( inject meta.resource_pools.access ))
+    cloud_properties:
+      zone: (( grab meta.google.zones.z1 ))
+  - name: access_z2
+    .: (( inject meta.resource_pools.access ))
+    cloud_properties:
+      zone: (( grab meta.google.zones.z2 ))
+  - name: access_z3
+    .: (( inject meta.resource_pools.access ))
+    cloud_properties:
+      zone: (( grab meta.google.zones.z3 ))
+
+  - name: runner_z1
+    .: (( inject meta.resource_pools.runner ))
+    cloud_properties:
+      zone: (( grab meta.google.zones.z1 ))
+  - name: runner_z2
+    .: (( inject meta.resource_pools.runner ))
+    cloud_properties:
+      zone: (( grab meta.google.zones.z2 ))
+  - name: runner_z3
+    .: (( inject meta.resource_pools.runner ))
+    cloud_properties:
+      zone: (( grab meta.google.zones.z3 ))
+
+compilation:
+  workers: 3
+  network: cf1
+  reuse_compilation_vms: true
+  cloud_properties:
+    machine_type: n1-standard-4
+    zone: (( grab meta.google.zones.z1 ))
+    root_disk_size_gb: 40
+    root_disk_type: pd-standard
