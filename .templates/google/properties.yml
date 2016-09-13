@@ -40,11 +40,9 @@ meta:
       webdav_config: ~
       fog_aws_storage_options: null
       fog_connection:
-        provider: AWS
-        aws_access_key_id: (( param "What is the access key id for the blobstore S3 buckets?" ))
-        aws_secret_access_key: (( param "What is the secret key for the blobstore S3 buckets?" ))
-        aws_signature_version: 2
-        host: "storage.googleapis.com"
+        provider: Google
+        google_storage_access_key_id: (( param "What is the access key id for the blobstore GCS buckets?" ))
+        google_storage_secret_access_key: (( param "What is the secret key for the blobstore GCS buckets?" ))
 
     creds:
       blobstore: ~
