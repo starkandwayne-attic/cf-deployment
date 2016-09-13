@@ -1,0 +1,26 @@
+---
+disk_pools:
+- name: small
+  disk_size: 10_240
+  cloud_properties:
+    type: pd-standard
+- name: medium
+  disk_size: 40_960
+  cloud_properties:
+    type: pd-standard
+- name: large
+  disk_size: 102_400
+  cloud_properties:
+    type: pd-standard
+- name: small_ssd
+  disk_size: 10_240
+  cloud_properties:
+    type: pd-ssd
+- name: medium_ssd
+  disk_size: 40_960
+  cloud_properties:
+    type: pd-ssd
+- name: large_ssd
+  disk_size: 102_400
+  cloud_properties:
+    type: pd-ssd

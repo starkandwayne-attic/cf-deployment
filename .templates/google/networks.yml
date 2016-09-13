@@ -1,0 +1,26 @@
+---
+networks:
+- name: cf1
+  type: manual
+  subnets: (( param "Specify your cf1 subnet" ))
+- name: cf2
+  type: manual
+  subnets: (( param "Specify your cf2 subnet" ))
+- name: cf3
+  type: manual
+  subnets: (( param "Specify your cf3 subnet" ))
+- name: runner1
+  type: manual
+  subnets: (( param "Specify your runner1 subnet" ))
+- name: runner2
+  type: manual
+  subnets: (( param "Specify your runner2 subnet" ))
+- name: runner3
+  type: manual
+  subnets: (( param "Specify your runner3 subnet" ))
+- name: router1
+  type: manual
+  subnets: (( param "Specify your router1 subnet" ))
+- name: router2
+  type: manual
+  subnets: (( param "Specify your router1 subnet" ))
