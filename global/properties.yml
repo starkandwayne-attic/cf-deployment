@@ -34,6 +34,7 @@ meta:
         cc_user_lookup_secret: (( vault meta.vault_prefix "/creds/uaa/secrets:cc_user_lookup" ))
         login_secret: (( vault meta.vault_prefix "/creds/uaa/secrets:login" ))
         doppler_secret: (( vault meta.vault_prefix "/creds/uaa/secrets:doppler" ))
+        firehose_secret:  (( vault meta.vault_prefix "/creds/uaa/secrets:firehose" ))
         gorouter_secret: (( vault meta.vault_prefix "/creds/uaa/secrets:gorouter" ))
         notifications_secret: (( vault meta.vault_prefix "/creds/uaa/secrets:notifications" ))
         ssh_proxy_secret: (( vault meta.vault_prefix "/creds/uaa/secrets:ssh_proxy" ))
@@ -575,6 +576,10 @@ properties:
         authorities: uaa.resource
         override: true
         secret: (( grab meta.cf.creds.uaa.doppler_secret ))
+      firehose:
+        authorities: doppler.firehose
+        authorized-grant-types: client_credentials,refresh_token
+        secret: (( grab meta.cf.creds.uaa.firehose_secret ))
       gorouter:
         authorities: routing.routes.read
         authorized-grant-types: client_credentials,refresh_token
