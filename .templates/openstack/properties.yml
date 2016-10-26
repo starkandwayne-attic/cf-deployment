@@ -1,0 +1,55 @@
+---
+meta:
+  cf:
+    consul:
+      servers: (( grab jobs.consul_z1.networks.cf1.static_ips jobs.consul_z2.networks.cf2.static_ips jobs.consul_z3.networks.cf3.static_ips ))
+    gorouter:
+      servers: (( grab jobs.router_z1.networks.router1.static_ips jobs.router_z2.networks.router2.static_ips ))
+    etcd:
+      servers: (( grab jobs.etcd_z1.networks.cf1.static_ips jobs.etcd_z2.networks.cf2.static_ips jobs.etcd_z3.networks.cf3.static_ips ))
+      cluster:
+      - instances: 1
+        name: database_z1
+      - instances: 1
+        name: database_z2
+      - instances: 1
+        name: database_z3
+    nats:
+      servers: (( grab jobs.nats_z1.networks.cf1.static_ips jobs.nats_z2.networks.cf2.static_ips ))
+
+    ccdb:
+      scheme: mysql
+      port: 3306
+    uaadb:
+      scheme: mysql
+      port: 3306
+    diegodb:
+      scheme: mysql
+      port: 3306
+
+
+    blobstore_config:
+      blobstore_type: fog
+      webdav_config: ~
+      fog_connection:
+        provider: OpenStack
+        openstack_username: (( param "What is the user name for your OpenStack?" ))
+        openstack_api_key: (( param "What is the password for your OpenStack?" ))
+        openstack_auth_url: (( param "What is the auth url for your OpenStack?" ))
+        openstack_temp_url_key: (( param "What is account meta temp url key for your OpenStack?" ))
+
+    creds:
+      blobstore: ~
+
+properties:
+  databases: ~
+  nfs_server: ~
+  blobstore: ~
+  logger_endpoint:
+    port: 4443
+
+  diego:
+    bbs:
+      sql:
+        db_driver: mysql
+        db_connection_string: (( concat meta.cf.diegodb.user ":" meta.cf.diegodb.pass "@tcp(" meta.cf.diegodb.host ":" meta.cf.diegodb.port ")/" meta.cf.diegodb.dbname ))

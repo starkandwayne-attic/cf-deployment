@@ -1,0 +1,360 @@
+---
+meta:
+  jobs:
+    consul:
+      persistent_disk_pool: small
+    etcd:
+      persistent_disk_pool: small
+    postgres:
+      persistent_disk_pool: ~  # not used
+    blobstore:
+      persistent_disk_pool: ~  # not used
+    database:
+      persistent_disk_pool: small
+
+jobs:
+- name: consul_z1
+  instances: 1
+  .: (( inject meta.jobs.consul ))
+  networks:
+  - name: cf1
+    static_ips: (( static_ips(10, 11, 12, 13, 14) ))
+  resource_pool: small_z1
+  properties:
+    metron_agent:
+      zone: z1
+- name: consul_z2
+  instances: 1
+  .: (( inject meta.jobs.consul ))
+  networks:
+  - name: cf2
+    static_ips: (( static_ips(10, 11, 12, 13, 14) ))
+  resource_pool: small_z2
+  properties:
+    metron_agent:
+      zone: z2
+- name: consul_z3
+  instances: 1
+  .: (( inject meta.jobs.consul ))
+  networks:
+  - name: cf3
+    static_ips: (( static_ips(10, 11, 12, 13, 14) ))
+  resource_pool: small_z3
+  properties:
+    metron_agent:
+      zone: z3
+- name: nats_z1
+  instances: 1
+  .: (( inject meta.jobs.nats ))
+  networks:
+  - name: cf1
+    static_ips: (( static_ips(0, 1, 2, 3, 4) ))
+  properties:
+    metron_agent:
+      zone: z1
+  resource_pool: small_z1
+- name: nats_z2
+  instances: 1
+  .: (( inject meta.jobs.nats ))
+  networks:
+  - name: cf2
+    static_ips: (( static_ips(0, 1, 2, 3, 4) ))
+  properties:
+    metron_agent:
+      zone: z2
+  resource_pool: small_z2
+- name: etcd_z1
+  instances: 1
+  .: (( inject meta.jobs.etcd ))
+  networks:
+  - name: cf1
+    static_ips: (( static_ips(5, 6, 7, 8, 9) ))
+  properties:
+    metron_agent:
+      zone: z1
+  resource_pool: small_z1
+- name: etcd_z2
+  instances: 1
+  .: (( inject meta.jobs.etcd ))
+  networks:
+  - name: cf2
+    static_ips: (( static_ips(5, 6, 7, 8, 9) ))
+  properties:
+    metron_agent:
+      zone: z2
+  resource_pool: small_z2
+- name: etcd_z3
+  instances: 1
+  .: (( inject meta.jobs.etcd ))
+  networks:
+  - name: cf3
+    static_ips: (( static_ips(5, 6, 7, 8, 9) ))
+  properties:
+    metron_agent:
+      zone: z3
+  resource_pool: small_z3
+- name: uaa_z1
+  instances: 1
+  .: (( inject meta.jobs.uaa ))
+  networks:
+  - name: cf1
+  properties:
+    metron_agent:
+      zone: z1
+  resource_pool: small_z1
+- name: uaa_z2
+  instances: 1
+  .: (( inject meta.jobs.uaa ))
+  networks:
+  - name: cf2
+  properties:
+    metron_agent:
+      zone: z2
+  resource_pool: small_z2
+- name: api_z1
+  instances: 1
+  .: (( inject meta.jobs.api ))
+  networks:
+  - name: cf1
+  properties:
+    metron_agent:
+      zone: z1
+  resource_pool: small_z1
+- name: api_z2
+  instances: 1
+  .: (( inject meta.jobs.api ))
+  networks:
+  - name: cf2
+  properties:
+    metron_agent:
+      zone: z2
+  resource_pool: small_z2
+- name: api_worker_z1
+  instances: 1
+  .: (( inject meta.jobs.api_worker ))
+  networks:
+  - name: cf1
+  properties:
+    metron_agent:
+      zone: z1
+  resource_pool: small_z1
+- name: api_worker_z2
+  instances: 1
+  .: (( inject meta.jobs.api_worker ))
+  networks:
+  - name: cf2
+  properties:
+    metron_agent:
+      zone: z2
+  resource_pool: small_z2
+- name: clock_global
+  instances: 1
+  .: (( inject meta.jobs.clock ))
+  networks:
+  - name: cf1
+  properties:
+    metron_agent:
+      zone: z1
+  resource_pool: small_z1
+- name: stats
+  instances: 1
+  .: (( inject meta.jobs.stats ))
+  networks:
+  - name: cf1
+  properties:
+    metron_agent:
+      zone: z1
+  resource_pool: small_z1
+- name: doppler_z1
+  instances: 1
+  .: (( inject meta.jobs.doppler ))
+  networks:
+  - name: cf1
+  properties:
+    metron_agent:
+      zone: z1
+    doppler:
+      zone: z1
+  resource_pool: small_z1
+- name: doppler_z2
+  instances: 1
+  .: (( inject meta.jobs.doppler ))
+  networks:
+  - name: cf2
+  properties:
+    metron_agent:
+      zone: z2
+    doppler:
+      zone: z2
+  resource_pool: small_z2
+- name: loggregator_trafficcontroller_z1
+  instances: 1
+  .: (( inject meta.jobs.trafficcontroller ))
+  networks:
+  - name: cf1
+  properties:
+    metron_agent:
+      zone: z1
+  resource_pool: small_z1
+- name: loggregator_trafficcontroller_z2
+  instances: 1
+  .: (( inject meta.jobs.trafficcontroller ))
+  networks:
+  - name: cf2
+  properties:
+    metron_agent:
+      zone: z2
+  resource_pool: small_z2
+- name: router_z1
+  instances: 1
+  .: (( inject meta.jobs.router ))
+  networks:
+  - name: router1
+    static_ips: (( static_ips(0, 1, 2, 3, 4) ))
+  properties:
+    metron_agent:
+      zone: z1
+  resource_pool: router_z1
+- name: router_z2
+  instances: 1
+  .: (( inject meta.jobs.router ))
+  networks:
+  - name: router2
+    static_ips: (( static_ips(0, 1, 2, 3, 4) ))
+  properties:
+    metron_agent:
+      zone: z2
+  resource_pool: router_z2
+- name: database_z1
+  instances: 1
+  .: (( inject meta.jobs.database ))
+  networks:
+  - name: cf1
+  resource_pool: large_z1
+  properties:
+    metron_agent:
+      zone: z1
+- name: database_z2
+  instances: 1
+  .: (( inject meta.jobs.database ))
+  networks:
+  - name: cf2
+  resource_pool: large_z2
+  properties:
+    metron_agent:
+      zone: z2
+- name: database_z3
+  instances: 1
+  .: (( inject meta.jobs.database ))
+  networks:
+  - name: cf3
+  resource_pool: large_z3
+  properties:
+    metron_agent:
+      zone: z3
+- name: brain_z1
+  instances: 1
+  .: (( inject meta.jobs.brain ))
+  networks:
+  - name: cf1
+  resource_pool: medium_z1
+  properties:
+    metron_agent:
+      zone: z1
+- name: brain_z2
+  instances: 1
+  .: (( inject meta.jobs.brain ))
+  networks:
+  - name: cf2
+  resource_pool: medium_z2
+  properties:
+    metron_agent:
+      zone: z2
+- name: cell_z1
+  instances: 1
+  .: (( inject meta.jobs.cell ))
+  networks:
+  - name: runner1
+  resource_pool: runner_z1
+  properties:
+    diego:
+      rep:
+        use_azure_fault_domains: null
+        zone: z1
+    metron_agent:
+      zone: z1
+- name: cell_z2
+  instances: 1
+  .: (( inject meta.jobs.cell ))
+  networks:
+  - name: runner2
+  resource_pool: runner_z2
+  properties:
+    diego:
+      rep:
+        use_azure_fault_domains: null
+        zone: z2
+    metron_agent:
+      zone: z2
+- name: cc_bridge_z1
+  instances: 1
+  .: (( inject meta.jobs.cc_bridge ))
+  networks:
+  - name: cf1
+  resource_pool: medium_z1
+  properties:
+    metron_agent:
+      zone: z1
+- name: cc_bridge_z2
+  instances: 1
+  .: (( inject meta.jobs.cc_bridge ))
+  networks:
+  - name: cf2
+  resource_pool: medium_z2
+  properties:
+    metron_agent:
+      zone: z2
+- name: route_emitter_z1
+  instances: 1
+  .: (( inject meta.jobs.route_emitter ))
+  networks:
+  - name: cf1
+  resource_pool: medium_z1
+  properties:
+    metron_agent:
+      zone: z1
+- name: route_emitter_z2
+  instances: 1
+  .: (( inject meta.jobs.route_emitter ))
+  networks:
+  - name: cf2
+  resource_pool: medium_z2
+  properties:
+    metron_agent:
+      zone: z2
+- name: access_z1
+  instances: 1
+  .: (( inject meta.jobs.access ))
+  networks:
+  - name: cf1
+  resource_pool: access_z1
+  properties:
+    metron_agent:
+      zone: z1
+- name: access_z2
+  instances: 1
+  .: (( inject meta.jobs.access ))
+  networks:
+  - name: cf2
+  resource_pool: access_z2
+  properties:
+    metron_agent:
+      zone: z2
+- name: acceptance_tests
+  networks:
+  - name: cf1
+  resource_pool: errand
+- name: smoke_tests
+  networks:
+  - name: cf1
+  resource_pool: errand
