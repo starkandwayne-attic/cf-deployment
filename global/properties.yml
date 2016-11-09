@@ -183,23 +183,6 @@ properties:
     db_logging_level: debug2
     default_app_disk_in_mb: 1024
     default_app_memory: 256
-    default_buildpacks:
-    - name: staticfile_buildpack
-      package: staticfile-buildpack
-    - name: java_buildpack
-      package: buildpack_java
-    - name: ruby_buildpack
-      package: ruby-buildpack
-    - name: nodejs_buildpack
-      package: nodejs-buildpack
-    - name: go_buildpack
-      package: go-buildpack
-    - name: python_buildpack
-      package: python-buildpack
-    - name: php_buildpack
-      package: php-buildpack
-    - name: binary_buildpack
-      package: binary-buildpack
     default_health_check_timeout: 60
     default_quota_definition: default
     default_running_security_groups:
