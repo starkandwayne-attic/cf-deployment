@@ -26,6 +26,9 @@ meta:
     diegodb:
       scheme: mysql
       port: 3306
+    routingdb:
+      scheme: mysql
+      port: 3306
 
 
     blobstore_config:
