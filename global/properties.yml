@@ -129,6 +129,15 @@ meta:
       server_cert: (( vault meta.vault_prefix "/certs/bbs:cert" ))
       server_key: (( vault meta.vault_prefix "/certs/bbs:key" ))
 
+    loggregator:
+      ca_cert: (( vault meta.vault_prefix "/certs/internal_ca:cert" ))
+      doppler_cert: (( vault meta.vault_prefix "/certs/doppler:cert" ))
+      doppler_key: (( vault meta.vault_prefix "/certs/doppler:key" ))
+      metron_cert: (( vault meta.vault_prefix "/certs/metron:cert" ))
+      metron_key: (( vault meta.vault_prefix "/certs/metron:key" ))
+      trafficcontroller_cert: (( vault meta.vault_prefix "/certs/trafficcontroller:cert" ))
+      trafficcontroller_key: (( vault meta.vault_prefix "/certs/trafficcontroller:key" ))
+
   skip_ssl_validation: false
 
 properties:
@@ -393,6 +402,7 @@ properties:
     maxRetainedLogMessages: 100
     message_drain_buffer_size: null
     port: 4443
+    outgoing_port: 8081
     etcd:
       client_cert: null
       client_key:  null
@@ -424,7 +434,16 @@ properties:
     maxRetainedLogMessages: 100
     outgoing_dropsonde_port: 8081
     tls:
-      ca_cert: null
+      ca_cert: (( grab meta.cf.loggregator.ca_cert ))
+      doppler:
+        cert: (( grab meta.cf.loggregator.doppler_cert ))
+        key: (( grab meta.cf.loggregator.doppler_key ))
+      metron:
+        cert: (( grab meta.cf.loggregator.metron_cert ))
+        key: (( grab meta.cf.loggregator.metron_key ))
+      trafficcontroller:
+        cert: (( grab meta.cf.loggregator.trafficcontroller_cert ))
+        key: (( grab meta.cf.loggregator.trafficcontroller_key ))
     dropsonde_incoming_port: null
   loggregator_endpoint:
     shared_secret: (( grab meta.cf.creds.loggregator.endpoint_secret ))
@@ -453,10 +472,8 @@ properties:
       user: null
     url: null
   metron_agent:
-    buffer_size: null
     deployment: (( grab name ))
     dropsonde_incoming_port: null
-    enable_buffer: null
     etcd:
       client_cert: null
       client_key: null
@@ -528,10 +545,12 @@ properties:
   system_domain_organization: system
   traffic_controller:
     disable_access_control: null
-    outgoing_port: 8080
     security_event_logging:
       enabled: false
     zone: null
+    etcd:
+      client_cert: null
+      client_key: null
   uaa:
     admin:
       client_secret: (( grab meta.cf.creds.uaa.admin_client_secret ))
@@ -707,7 +726,6 @@ properties:
         basic_auth_username: (( grab meta.cf.creds.cc.internal_api_user ))
       dropsonde_port: null
       log_level: null
-      traffic_controller_url: (( concat "wss://doppler." meta.cf.system_domain ":443" ))
   cflinuxfs2-rootfs:
     trusted_certs: null
   diego:

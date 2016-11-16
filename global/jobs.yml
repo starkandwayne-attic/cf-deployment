@@ -275,6 +275,9 @@ meta:
         release: toolbelt
       update: {}
       properties:
+        loggregator:
+          uaa:
+            client_secret: (( grab meta.cf.creds.uaa.doppler_secret ))
         route_registrar:
           routes:
           - name: doppler
@@ -282,11 +285,6 @@ meta:
             registration_interval: 20s
             uris:
             - (( concat "doppler." meta.cf.system_domain ))
-          - name: loggregator
-            port: 8080
-            registration_interval: 20s
-            uris:
-            - (( concat "loggregator." meta.cf.system_domain ))
     router:
       templates:
       - name: consul_agent
