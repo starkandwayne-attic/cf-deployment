@@ -408,11 +408,6 @@ properties:
     enabled: true
   etcd:
     machines: (( grab meta.cf.etcd.servers ))
-  etcd_metrics_server:
-    nats:
-      machines: (( grab meta.cf.nats.servers ))
-      password: (( grab meta.cf.nats.pass ))
-      username: (( grab meta.cf.nats.user ))
   ha_proxy: null
   logger_endpoint: null
   loggregator:
