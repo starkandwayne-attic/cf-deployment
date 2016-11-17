@@ -39,6 +39,8 @@ meta:
       templates:
       - name: nats
         release: cf
+        consumes:
+          nats: null
       - name: nats_stream_forwarder
         release: cf
       - name: metron_agent
