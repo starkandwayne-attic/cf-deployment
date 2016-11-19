@@ -225,6 +225,8 @@ properties:
       package: php-buildpack
     - name: binary_buildpack
       package: binary-buildpack
+    - name: dotnet_core_buildpack
+      package: dotnet-core-buildpack
     internal_api_password: (( grab meta.cf.creds.cc.internal_api_password ))
     internal_api_user: (( grab meta.cf.creds.cc.internal_api_user ))
     jobs:
@@ -330,6 +332,8 @@ properties:
       package: php-buildpack
     - name: binary_buildpack
       package: binary-buildpack
+    - name: dotnet_core_buildpack
+      package: dotnet-core-buildpack
     system_hostnames: null
     thresholds:
       api:

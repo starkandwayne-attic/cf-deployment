@@ -190,6 +190,8 @@ meta:
         release: cf
       - name: staticfile-buildpack
         release: cf
+      - name: dotnet-core-buildpack
+        release: cf
       - name: cloud_controller_ng
         release: cf
       - name: metron_agent
