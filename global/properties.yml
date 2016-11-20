@@ -129,6 +129,15 @@ meta:
       server_cert: (( vault meta.vault_prefix "/certs/bbs:cert" ))
       server_key: (( vault meta.vault_prefix "/certs/bbs:key" ))
 
+    rep:
+      ca_cert: (( vault meta.vault_prefix "/certs/internal_ca:cert" ))
+      client_cert: (( vault meta.vault_prefix "/certs/rep_client:cert" ))
+      client_key: (( vault meta.vault_prefix "/certs/rep_client:key" ))
+      client_session_cache_size: null
+      require_ssl: true
+      server_cert: (( vault meta.vault_prefix "/certs/rep:cert" ))
+      server_key: (( vault meta.vault_prefix "/certs/rep:key" ))
+
     loggregator:
       ca_cert: (( vault meta.vault_prefix "/certs/internal_ca:cert" ))
       doppler_cert: (( vault meta.vault_prefix "/certs/doppler:cert" ))
@@ -734,6 +743,7 @@ properties:
       cell_state_timeout: null
       dropsonde_port: null
       log_level: null
+      rep: (( grab meta.cf.rep ))
       starting_container_weight: null
     bbs:
       active_key_label: key1
@@ -759,6 +769,7 @@ properties:
         max_idle_conns_per_host: null
         require_ssl: true
       log_level: null
+      rep: (( grab meta.cf.rep ))
       require_ssl: true
       server_cert: (( grab meta.cf.bbs.server_cert ))
       server_key: (( grab meta.cf.bbs.server_key ))
@@ -797,11 +808,17 @@ properties:
     rep:
       bbs: (( grab meta.cf.bbs ))
       dropsonde_port: null
+      enable_legacy_api_endpoints: false
       evacuation_timeout_in_seconds: 60
+      listen_addr_admin: null
       log_level: debug
       preloaded_rootfses:
       - cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs
       trusted_certs: null
+      require_tls: true
+      ca_cert: (( grab meta.cf.rep.ca_cert ))
+      server_cert: (( grab meta.cf.rep.server_cert ))
+      server_key: (( grab meta.cf.rep.server_key ))
     route_emitter:
       bbs: (( grab meta.cf.bbs ))
       dropsonde_port: null

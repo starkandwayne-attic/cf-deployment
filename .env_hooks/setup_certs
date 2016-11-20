@@ -36,11 +36,12 @@ certstrap --depot-path ${depot_path} init --passphrase '' --common-name ${CA} >/
 
 gen_cert consul_agent
 gen_cert server.dc1.cf.internal
-gen_cert clientName #etcd client & bbs client
+gen_cert clientName #etcd client, bbs client & rep client
 gen_cert etcd.service.cf.internal
 gen_cert blobstore.service.cf.internal
 gen_cert uaa.service.cf.internal
 gen_cert bbs.service.cf.internal
+gen_cert cell.service.cf.internal
 gen_cert doppler
 gen_cert metron
 gen_cert trafficcontroller
@@ -61,6 +62,9 @@ upload_to_vault uaa uaa.service.cf.internal
 
 upload_to_vault bbs_client clientName
 upload_to_vault bbs bbs.service.cf.internal
+
+upload_to_vault rep_client clientName
+upload_to_vault rep cell.service.cf.internal
 
 upload_to_vault doppler doppler
 upload_to_vault metron metron
