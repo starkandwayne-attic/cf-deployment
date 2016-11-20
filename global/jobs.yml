@@ -3,10 +3,6 @@ meta:
   jobs:
     consul:
       persistent_disk_pool: (( param "Specify the persistent disk pool for consul" ))
-      properties:
-        consul:
-          agent:
-            mode: server
       templates:
       - name: consul_agent
         release: cf
@@ -19,13 +15,18 @@ meta:
       update:
         max_in_flight: 1
         serial: true
+      properties:
+        consul:
+          agent:
+            mode: server
+
     ha_proxy:
       templates:
+      - name: consul_agent
+        release: cf
       - name: haproxy
         release: cf
       - name: metron_agent
-        release: cf
-      - name: consul_agent
         release: cf
       - name: toolbelt
         release: toolbelt
@@ -37,6 +38,8 @@ meta:
           servers: (( grab meta.cf.gorouter.servers ))
     nats:
       templates:
+      - name: consul_agent
+        release: cf
       - name: nats
         release: cf
         consumes:
@@ -50,6 +53,7 @@ meta:
       - name: toolbelt-quick
         release: toolbelt
       update: {}
+
     etcd:
       persistent_disk_pool: (( param "Specify the persistent disk pool for etcd" ))
       templates:
@@ -69,15 +73,15 @@ meta:
         max_in_flight: 1
         serial: true
       properties:
-        etcd:
-          peer_require_ssl: false
-          require_ssl: false
         consul:
           agent:
             services:
-              etcd: {}
+              etcd:
+                name: cf-etcd
     stats:
       templates:
+      - name: consul_agent
+        release: cf
       - name: collector
         release: cf
       - name: metron_agent
@@ -87,6 +91,7 @@ meta:
       - name: toolbelt-quick
         release: toolbelt
       update: {}
+
     blobstore:
       persistent_disk_pool: (( param "Specify the persistent disk pool for blobstore" ))
       templates:
@@ -103,7 +108,6 @@ meta:
       - name: toolbelt-quick
         release: toolbelt
       update: {}
-      persistent_disk_pool: (( param "Specify the persistent disk pool for blobstore" ))
       properties:
         consul:
           agent:
@@ -121,6 +125,8 @@ meta:
     postgres:
       persistent_disk_pool: (( param "Specify the persistent disk pool for postgres" ))
       templates:
+      - name: consul_agent
+        release: cf
       - name: postgres
         release: postgres
       - name: metron_agent
@@ -130,13 +136,14 @@ meta:
       - name: toolbelt-quick
         release: toolbelt
       update: {}
+
     uaa:
       templates:
+      - name: consul_agent
+        release: cf
       - name: uaa
         release: cf
       - name: metron_agent
-        release: cf
-      - name: consul_agent
         release: cf
       - name: route_registrar
         release: cf
@@ -154,10 +161,7 @@ meta:
               uaa: {}
         route_registrar:
           routes:
-          - health_check:
-              name: uaa-healthcheck
-              script_path: /var/vcap/jobs/uaa/bin/health_check
-            name: uaa
+          - name: uaa
             port: 8080
             registration_interval: 4s
             tags:
@@ -167,6 +171,9 @@ meta:
             - (( concat "*.uaa." meta.cf.system_domain ))
             - (( concat "login." meta.cf.system_domain ))
             - (( concat "*.login." meta.cf.system_domain ))
+            health_check:
+              name: uaa-healthcheck
+              script_path: /var/vcap/jobs/uaa/bin/health_check
         uaa:
           proxy:
             servers: (( grab meta.cf.gorouter.servers ))
@@ -206,7 +213,8 @@ meta:
         release: toolbelt
       - name: toolbelt-quick
         release: toolbelt
-      update: {serial: true}
+      update:
+        serial: true
       properties:
         consul:
           agent:
@@ -222,8 +230,11 @@ meta:
               component: CloudController
             uris:
             - (( concat "api." meta.cf.system_domain ))
+
     clock:
       templates:
+      - name: consul_agent
+        release: cf
       - name: cloud_controller_clock
         release: cf
       - name: metron_agent
@@ -233,6 +244,7 @@ meta:
       - name: toolbelt-quick
         release: toolbelt
       update: {}
+
     api_worker:
       templates:
       - name: consul_agent
@@ -248,8 +260,11 @@ meta:
       update: {}
       properties:
         nfs_server: (( grab properties.nfs_server ))
+
     doppler:
       templates:
+      - name: consul_agent
+        release: cf
       - name: doppler
         release: cf
       - name: syslog_drain_binder
@@ -261,8 +276,11 @@ meta:
       - name: toolbelt-quick
         release: toolbelt
       update: {}
+
     trafficcontroller:
       templates:
+      - name: consul_agent
+        release: cf
       - name: loggregator_trafficcontroller
         release: cf
       - name: metron_agent
@@ -285,6 +303,7 @@ meta:
             registration_interval: 20s
             uris:
             - (( concat "doppler." meta.cf.system_domain ))
+
     router:
       templates:
       - name: consul_agent
@@ -303,8 +322,27 @@ meta:
           agent:
             services:
               gorouter: {}
+
     database:
       persistent_disk_pool: (( param "Specify the persistent disk pool for database" ))
+      templates:
+      - name: consul_agent
+        release: cf
+      - name: etcd
+        release: cf
+      - name: bbs
+        release: diego
+      - name: metron_agent
+        release: cf
+      - name: cfdot
+        release: diego
+      - name: toolbelt
+        release: toolbelt
+      - name: toolbelt-quick
+        release: toolbelt
+      update:
+        max_in_flight: 1
+        serial: true
       properties:
         etcd:
           advertise_urls_dns_suffix: etcd.service.cf.internal
@@ -327,22 +365,7 @@ meta:
           agent:
             services:
               etcd: {}
-      templates:
-      - name: consul_agent
-        release: cf
-      - name: etcd
-        release: cf
-      - name: bbs
-        release: diego
-      - name: metron_agent
-        release: cf
-      - name: toolbelt
-        release: toolbelt
-      - name: toolbelt-quick
-        release: toolbelt
-      update:
-        max_in_flight: 1
-        serial: true
+
     brain:
       templates:
       - name: consul_agent
@@ -351,6 +374,8 @@ meta:
         release: diego
       - name: metron_agent
         release: cf
+      - name: cfdot
+        release: diego
       - name: toolbelt
         release: toolbelt
       - name: toolbelt-quick
@@ -358,6 +383,7 @@ meta:
       update:
         max_in_flight: 1
         serial: true
+
     cell:
       templates:
       - name: consul_agent
@@ -365,17 +391,20 @@ meta:
       - name: rep
         release: diego
       - name: garden
-        release: garden-linux
+        release: garden-runc
       - name: cflinuxfs2-rootfs-setup
         release: cflinuxfs2-rootfs
       - name: metron_agent
         release: cf
+      - name: cfdot
+        release: diego
       - name: toolbelt
         release: toolbelt
       - name: toolbelt-quick
         release: toolbelt
       update:
         max_in_flight: 1
+
     cc_bridge:
       templates:
       - name: consul_agent
@@ -390,12 +419,15 @@ meta:
         release: cf
       - name: metron_agent
         release: cf
+      - name: cfdot
+        release: diego
       - name: toolbelt
         release: toolbelt
       - name: toolbelt-quick
         release: toolbelt
       update:
         max_in_flight: 1
+
     route_emitter:
       templates:
       - name: consul_agent
@@ -404,12 +436,15 @@ meta:
         release: diego
       - name: metron_agent
         release: cf
+      - name: cfdot
+        release: diego
       - name: toolbelt
         release: toolbelt
       - name: toolbelt-quick
         release: toolbelt
       update:
         max_in_flight: 1
+
     access:
       templates:
       - name: consul_agent
@@ -420,12 +455,15 @@ meta:
         release: cf
       - name: file_server
         release: diego
+      - name: cfdot
+        release: diego
       - name: toolbelt
         release: toolbelt
       - name: toolbelt-quick
         release: toolbelt
       update:
         max_in_flight: 1
+
     errand:
       lifecycle: errand
 
