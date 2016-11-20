@@ -85,6 +85,21 @@ meta:
       server_cert: (( vault meta.vault_prefix "/certs/etcd_server:cert" ))
       server_key: (( vault meta.vault_prefix "/certs/etcd_server:key" ))
       cluster: (( param "Enter the etcd cluster instances" ))
+    cf-etcd:
+      ca_cert: (( vault meta.vault_prefix "/certs/internal_ca:cert" ))
+      client_cert: (( vault meta.vault_prefix "/certs/cf-etcd_client:cert" ))
+      client_key: (( vault meta.vault_prefix "/certs/cf-etcd_client:key" ))
+      cluster: (( param "Enter the cf-etcd cluster instances" ))
+      dns_suffix: cf-etcd.service.cf.internal
+      machines:
+        - cf-etcd.service.cf.internal
+      peer_cert: (( vault meta.vault_prefix "/certs/cf-etcd_peer:cert" ))
+      peer_key: (( vault meta.vault_prefix "/certs/cf-etcd_peer:key" ))
+      peer_require_ssl: true
+      require_ssl: true
+      servers: (( param "Enter the IPs of the cf-etcd servers" ))
+      server_cert: (( vault meta.vault_prefix "/certs/cf-etcd_server:cert" ))
+      server_key: (( vault meta.vault_prefix "/certs/cf-etcd_server:key" ))
     nats:
       servers: (( param "Enter the IPs of the nats servers" ))
       user: nats_user
@@ -412,9 +427,7 @@ properties:
     message_drain_buffer_size: null
     port: 4443
     outgoing_port: 8081
-    etcd:
-      client_cert: null
-      client_key:  null
+    etcd: (( grab meta.cf.cf-etcd ))
     tls:
       enable: null
       port: null
@@ -427,19 +440,29 @@ properties:
   dropsonde:
     enabled: true
   etcd:
-    machines: (( grab meta.cf.etcd.servers ))
+    advertise_urls_dns_suffix: cf-etcd.service.cf.internal
+    ca_cert: (( grab meta.cf.cf-etcd.ca_cert ))
+    client_cert: (( grab meta.cf.cf-etcd.client_cert ))
+    client_key: (( grab meta.cf.cf-etcd.client_key ))
+    cluster: (( grab meta.cf.cf-etcd.cluster ))
+    machines: (( grab meta.cf.cf-etcd.servers ))
+    peer_ca_cert: (( grab meta.cf.cf-etcd.ca_cert ))
+    peer_client: (( grab meta.cf.cf-etcd.client_cert ))
+    peer_cert: (( grab meta.cf.cf-etcd.peer_cert ))
+    peer_key: (( grab meta.cf.cf-etcd.peer_key ))
+    peer_require_ssl: true
+    require_ssl: true
+    server_cert: (( grab meta.cf.cf-etcd.server_cert ))
+    server_key: (( grab meta.cf.cf-etcd.server_key ))
+  etcd_metrics_server:
+    etcd: (( grab meta.cf.cf-etcd ))
   ha_proxy: null
   logger_endpoint: null
   loggregator:
     dropsonde_incoming_port: null
     blacklisted_syslog_ranges: null
     debug: false
-    etcd:
-      ca_cert: null
-      machines: (( grab meta.cf.etcd.servers ))
-      client_cert: null
-      client_key: null
-      require_ssl: null
+    etcd: (( grab meta.cf.cf-etcd ))
     maxRetainedLogMessages: 100
     outgoing_dropsonde_port: 8081
     tls:
@@ -483,9 +506,7 @@ properties:
   metron_agent:
     deployment: (( grab name ))
     dropsonde_incoming_port: null
-    etcd:
-      client_cert: null
-      client_key: null
+    etcd: (( grab meta.cf.cf-etcd ))
     preferred_protocol: null
     protocols: null
     tls:
@@ -557,9 +578,7 @@ properties:
     security_event_logging:
       enabled: false
     zone: null
-    etcd:
-      client_cert: null
-      client_key: null
+    etcd: (( grab meta.cf.cf-etcd ))
   uaa:
     admin:
       client_secret: (( grab meta.cf.creds.uaa.admin_client_secret ))
@@ -870,6 +889,4 @@ properties:
     persistent_image_list:
     - /var/vcap/packages/cflinuxfs2/rootfs
   syslog_drain_binder:
-    etcd:
-      client_cert: null
-      client_key:  null
+    etcd: (( grab meta.cf.cf-etcd ))

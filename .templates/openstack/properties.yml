@@ -14,6 +14,15 @@ meta:
         name: database_z2
       - instances: 1
         name: database_z3
+    cf-etcd:
+      servers: (( grab jobs.etcd_z1.networks.cf1.static_ips jobs.etcd_z2.networks.cf2.static_ips jobs.etcd_z3.networks.cf3.static_ips ))
+      cluster:
+      - instances: 1
+        name: etcd_z1
+      - instances: 1
+        name: etcd_z2
+      - instances: 1
+        name: etcd_z3
     nats:
       servers: (( grab jobs.nats_z1.networks.cf1.static_ips jobs.nats_z2.networks.cf2.static_ips ))
 
