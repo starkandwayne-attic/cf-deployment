@@ -735,6 +735,12 @@ properties:
         basic_auth_username: (( grab meta.cf.creds.cc.internal_api_user ))
       dropsonde_port: null
       log_level: null
+  netman:
+    disable: null
+  vxlan-policy-agent: null
+  garden-cni: null
+  cni-flannel: null
+  policy-server: null
   cflinuxfs2-rootfs:
     trusted_certs: null
   diego:
@@ -756,6 +762,7 @@ properties:
         kick_task_duration_in_seconds: null
         repeat_interval_in_seconds: null
       dropsonde_port: null
+      enable_access_log: null
       encryption_keys:
       - label: key1
         passphrase: (( grab meta.cf.creds.diego.encryption_key ))
@@ -779,6 +786,8 @@ properties:
         db_driver: (( grab meta.cf.diegodb.scheme ))
         max_open_connections: 500
         require_ssl: null
+    cfdot:
+      bbs: (( grab meta.cf.bbs ))
     executor:
       ca_certs_for_downloads: null
       container_metrics_report_interval: null
@@ -847,12 +856,17 @@ properties:
     - 0.0.0.0/0
     destroy_containers_on_start: true
     disk_quota_enabled: null
+    dns_servers: null
     graph_cleanup_threshold_in_mb: 0
     insecure_docker_registry_list: null
     listen_address: 0.0.0.0:7777
     listen_network: tcp
     log_level: debug
+    max_containers: null
     network_mtu: null
+    network_plugin: null
+    network_plugin_extra_args: null
+    network_pool: null
     persistent_image_list:
     - /var/vcap/packages/cflinuxfs2/rootfs
   syslog_drain_binder:
