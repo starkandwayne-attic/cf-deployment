@@ -207,6 +207,8 @@ jobs:
   networks:
   - name: cf1
   properties:
+    traffic_controller:
+      zone: z1
     metron_agent:
       zone: z1
     consul:
@@ -223,6 +225,8 @@ jobs:
   networks:
   - name: cf2
   properties:
+    traffic_controller:
+      zone: z2
     metron_agent:
       zone: z2
     consul:

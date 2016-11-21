@@ -176,6 +176,8 @@ jobs:
   instances: 1
   .: (( inject meta.jobs.trafficcontroller ))
   properties:
+    traffic_controller:
+      zone: z1
     metron_agent:
       zone: z1
     consul:
