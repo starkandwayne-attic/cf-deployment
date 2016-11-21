@@ -775,7 +775,11 @@ properties:
       encryption_keys:
       - label: key1
         passphrase: (( grab meta.cf.creds.diego.encryption_key ))
-      etcd: null
+      etcd:
+        machines: []
+        ca_cert: ""
+        client_cert: ""
+        client_key: ""
       log_level: null
       rep: (( grab meta.cf.rep ))
       require_ssl: true
