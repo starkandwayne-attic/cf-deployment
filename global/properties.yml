@@ -75,16 +75,6 @@ meta:
 
     gorouter:
       servers: (( param "Enter the IPs of the gorouters" ))
-    etcd:
-      servers: (( param "Enter the IPs of the etcd servers" ))
-      ca_cert: (( vault meta.vault_prefix "/certs/internal_ca:cert" ))
-      client_cert: (( vault meta.vault_prefix "/certs/etcd_client:cert" ))
-      client_key: (( vault meta.vault_prefix "/certs/etcd_client:key" ))
-      peer_cert: (( vault meta.vault_prefix "/certs/etcd_peer:cert" ))
-      peer_key: (( vault meta.vault_prefix "/certs/etcd_peer:key" ))
-      server_cert: (( vault meta.vault_prefix "/certs/etcd_server:cert" ))
-      server_key: (( vault meta.vault_prefix "/certs/etcd_server:key" ))
-      cluster: (( param "Enter the etcd cluster instances" ))
     cf-etcd:
       ca_cert: (( vault meta.vault_prefix "/certs/internal_ca:cert" ))
       client_cert: (( vault meta.vault_prefix "/certs/cf-etcd_client:cert" ))
@@ -785,15 +775,7 @@ properties:
       encryption_keys:
       - label: key1
         passphrase: (( grab meta.cf.creds.diego.encryption_key ))
-      etcd:
-        ca_cert: (( grab meta.cf.bbs.ca_cert ))
-        client_cert: (( grab meta.cf.bbs.client_cert ))
-        client_key: (( grab meta.cf.bbs.client_key ))
-        client_session_cache_size: null
-        machines:
-        - etcd.service.cf.internal
-        max_idle_conns_per_host: null
-        require_ssl: true
+      etcd: null
       log_level: null
       rep: (( grab meta.cf.rep ))
       require_ssl: true
