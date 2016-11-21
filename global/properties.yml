@@ -139,7 +139,7 @@ meta:
       client_cert: (( vault meta.vault_prefix "/certs/rep_client:cert" ))
       client_key: (( vault meta.vault_prefix "/certs/rep_client:key" ))
       client_session_cache_size: null
-      require_ssl: true
+      require_tls: true
       server_cert: (( vault meta.vault_prefix "/certs/rep:cert" ))
       server_key: (( vault meta.vault_prefix "/certs/rep:key" ))
 
