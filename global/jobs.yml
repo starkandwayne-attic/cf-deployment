@@ -43,7 +43,7 @@ meta:
       - name: nats
         release: cf
         consumes:
-          nats: null
+          nats: nil
       - name: nats_stream_forwarder
         release: cf
       - name: metron_agent
