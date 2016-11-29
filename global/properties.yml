@@ -75,16 +75,21 @@ meta:
 
     gorouter:
       servers: (( param "Enter the IPs of the gorouters" ))
-    etcd:
-      servers: (( param "Enter the IPs of the etcd servers" ))
+    cf-etcd:
       ca_cert: (( vault meta.vault_prefix "/certs/internal_ca:cert" ))
-      client_cert: (( vault meta.vault_prefix "/certs/etcd_client:cert" ))
-      client_key: (( vault meta.vault_prefix "/certs/etcd_client:key" ))
-      peer_cert: (( vault meta.vault_prefix "/certs/etcd_peer:cert" ))
-      peer_key: (( vault meta.vault_prefix "/certs/etcd_peer:key" ))
-      server_cert: (( vault meta.vault_prefix "/certs/etcd_server:cert" ))
-      server_key: (( vault meta.vault_prefix "/certs/etcd_server:key" ))
-      cluster: (( param "Enter the etcd cluster instances" ))
+      client_cert: (( vault meta.vault_prefix "/certs/cf-etcd_client:cert" ))
+      client_key: (( vault meta.vault_prefix "/certs/cf-etcd_client:key" ))
+      cluster: (( param "Enter the cf-etcd cluster instances" ))
+      dns_suffix: cf-etcd.service.cf.internal
+      machines:
+        - cf-etcd.service.cf.internal
+      peer_cert: (( vault meta.vault_prefix "/certs/cf-etcd_peer:cert" ))
+      peer_key: (( vault meta.vault_prefix "/certs/cf-etcd_peer:key" ))
+      peer_require_ssl: true
+      require_ssl: true
+      servers: (( param "Enter the IPs of the cf-etcd servers" ))
+      server_cert: (( vault meta.vault_prefix "/certs/cf-etcd_server:cert" ))
+      server_key: (( vault meta.vault_prefix "/certs/cf-etcd_server:key" ))
     nats:
       servers: (( param "Enter the IPs of the nats servers" ))
       user: nats_user
@@ -110,6 +115,14 @@ meta:
       pass: (( param "Specify the password of the diegodb user" ))
       dbname: diegodb
 
+    routingdb:
+      host: (( param "What hostname/IP is the routingdb available at?" ))
+      port: (( param "What port is the routingdb listening on?" ))
+      scheme: (( param "Specify the type of database the routingdb is (postgres, mysql)" ))
+      user: (( param "Specify the user to connect to the routingdb" ))
+      pass: (( param "Specify the password of the routingdb user" ))
+      dbname: routingdb
+
     bbs:
       api_location: null
       ca_cert: (( vault meta.vault_prefix "/certs/internal_ca:cert" ))
@@ -120,6 +133,24 @@ meta:
       require_ssl: true
       server_cert: (( vault meta.vault_prefix "/certs/bbs:cert" ))
       server_key: (( vault meta.vault_prefix "/certs/bbs:key" ))
+
+    rep:
+      ca_cert: (( vault meta.vault_prefix "/certs/internal_ca:cert" ))
+      client_cert: (( vault meta.vault_prefix "/certs/rep_client:cert" ))
+      client_key: (( vault meta.vault_prefix "/certs/rep_client:key" ))
+      client_session_cache_size: null
+      require_tls: true
+      server_cert: (( vault meta.vault_prefix "/certs/rep:cert" ))
+      server_key: (( vault meta.vault_prefix "/certs/rep:key" ))
+
+    loggregator:
+      ca_cert: (( vault meta.vault_prefix "/certs/internal_ca:cert" ))
+      doppler_cert: (( vault meta.vault_prefix "/certs/doppler:cert" ))
+      doppler_key: (( vault meta.vault_prefix "/certs/doppler:key" ))
+      metron_cert: (( vault meta.vault_prefix "/certs/metron:cert" ))
+      metron_key: (( vault meta.vault_prefix "/certs/metron:key" ))
+      trafficcontroller_cert: (( vault meta.vault_prefix "/certs/trafficcontroller:cert" ))
+      trafficcontroller_key: (( vault meta.vault_prefix "/certs/trafficcontroller:key" ))
 
   skip_ssl_validation: false
 
@@ -212,7 +243,7 @@ properties:
     - name: staticfile_buildpack
       package: staticfile-buildpack
     - name: java_buildpack
-      package: buildpack_java
+      package: java-buildpack
     - name: ruby_buildpack
       package: ruby-buildpack
     - name: nodejs_buildpack
@@ -225,6 +256,8 @@ properties:
       package: php-buildpack
     - name: binary_buildpack
       package: binary-buildpack
+    - name: dotnet_core_buildpack
+      package: dotnet-core-buildpack
     internal_api_password: (( grab meta.cf.creds.cc.internal_api_password ))
     internal_api_user: (( grab meta.cf.creds.cc.internal_api_user ))
     jobs:
@@ -317,7 +350,7 @@ properties:
     - name: staticfile_buildpack
       package: staticfile-buildpack
     - name: java_buildpack
-      package: buildpack_java
+      package: java-buildpack
     - name: ruby_buildpack
       package: ruby-buildpack
     - name: nodejs_buildpack
@@ -330,6 +363,8 @@ properties:
       package: php-buildpack
     - name: binary_buildpack
       package: binary-buildpack
+    - name: dotnet_core_buildpack
+      package: dotnet-core-buildpack
     system_hostnames: null
     thresholds:
       api:
@@ -358,6 +393,7 @@ properties:
       tag: admin
   collector: null
   consul:
+    dns_config: null
     agent:
       datacenter: null
       domain: cf.internal
@@ -380,9 +416,8 @@ properties:
     maxRetainedLogMessages: 100
     message_drain_buffer_size: null
     port: 4443
-    etcd:
-      client_cert: null
-      client_key:  null
+    outgoing_port: 8081
+    etcd: (( grab meta.cf.cf-etcd ))
     tls:
       enable: null
       port: null
@@ -395,28 +430,42 @@ properties:
   dropsonde:
     enabled: true
   etcd:
-    machines: (( grab meta.cf.etcd.servers ))
+    advertise_urls_dns_suffix: cf-etcd.service.cf.internal
+    ca_cert: (( grab meta.cf.cf-etcd.ca_cert ))
+    client_cert: (( grab meta.cf.cf-etcd.client_cert ))
+    client_key: (( grab meta.cf.cf-etcd.client_key ))
+    cluster: (( grab meta.cf.cf-etcd.cluster ))
+    machines: (( grab meta.cf.cf-etcd.servers ))
+    peer_ca_cert: (( grab meta.cf.cf-etcd.ca_cert ))
+    peer_client: (( grab meta.cf.cf-etcd.client_cert ))
+    peer_cert: (( grab meta.cf.cf-etcd.peer_cert ))
+    peer_key: (( grab meta.cf.cf-etcd.peer_key ))
+    peer_require_ssl: true
+    require_ssl: true
+    server_cert: (( grab meta.cf.cf-etcd.server_cert ))
+    server_key: (( grab meta.cf.cf-etcd.server_key ))
   etcd_metrics_server:
-    nats:
-      machines: (( grab meta.cf.nats.servers ))
-      password: (( grab meta.cf.nats.pass ))
-      username: (( grab meta.cf.nats.user ))
+    etcd: (( grab meta.cf.cf-etcd ))
   ha_proxy: null
   logger_endpoint: null
   loggregator:
     dropsonde_incoming_port: null
     blacklisted_syslog_ranges: null
     debug: false
-    etcd:
-      ca_cert: null
-      machines: (( grab meta.cf.etcd.servers ))
-      client_cert: null
-      client_key: null
-      require_ssl: null
+    etcd: (( grab meta.cf.cf-etcd ))
     maxRetainedLogMessages: 100
     outgoing_dropsonde_port: 8081
     tls:
-      ca_cert: null
+      ca_cert: (( grab meta.cf.loggregator.ca_cert ))
+      doppler:
+        cert: (( grab meta.cf.loggregator.doppler_cert ))
+        key: (( grab meta.cf.loggregator.doppler_key ))
+      metron:
+        cert: (( grab meta.cf.loggregator.metron_cert ))
+        key: (( grab meta.cf.loggregator.metron_key ))
+      trafficcontroller:
+        cert: (( grab meta.cf.loggregator.trafficcontroller_cert ))
+        key: (( grab meta.cf.loggregator.trafficcontroller_key ))
     dropsonde_incoming_port: null
   loggregator_endpoint:
     shared_secret: (( grab meta.cf.creds.loggregator.endpoint_secret ))
@@ -428,7 +477,6 @@ properties:
     brand: oss
     catalina_opts: null
     enabled: true
-    invitations_enabled: null
     links:
       passwd: (( concat "https://login." meta.cf.system_domain "/forgot_password" ))
       signup: (( concat "https://login." meta.cf.system_domain "/create_account" ))
@@ -437,27 +485,18 @@ properties:
     notifications:
       url: null
     protocol: null
-    restricted_ips_regex: null
     saml: null
     self_service_links_enabled: null
-    signups_enabled: null
     smtp:
       host: null
       password: null
       port: null
       user: null
-    spring_profiles: null
-    tiles: null
-    uaa_base: null
     url: null
   metron_agent:
-    buffer_size: null
     deployment: (( grab name ))
     dropsonde_incoming_port: null
-    enable_buffer: null
-    etcd:
-      client_cert: null
-      client_key: null
+    etcd: (( grab meta.cf.cf-etcd ))
     preferred_protocol: null
     protocols: null
     tls:
@@ -477,6 +516,7 @@ properties:
   nfs_server: (( param "Set the nfs_server properties, if using NFS as the blobstore" ))
   request_timeout_in_seconds: 900
   router:
+    balancing_algorithm: null
     cipher_suites: null
     debug_address: null
     drain_wait: null
@@ -484,6 +524,10 @@ properties:
     enable_proxy: null
     enable_ssl: null
     extra_headers_to_log: null
+    force_forwarded_proto_https: null
+    healthcheck_user_agent: null
+    load_balancer_healthy_threshold: null
+    logging_level: null
     logrotate: null
     port: null
     requested_route_registration_interval_in_seconds: null
@@ -492,6 +536,7 @@ properties:
     route_services_secret_decrypt_only: null
     route_services_timeout: null
     secure_cookies: null
+    suspend_pruning_if_nats_unavailable: null
     ssl_cert: null
     ssl_key: null
     ssl_skip_validation: true
@@ -499,6 +544,8 @@ properties:
       password: (( grab meta.cf.creds.gorouter.status_pass ))
       port: null
       user: (( grab meta.cf.creds.gorouter.status_user ))
+    tracing:
+      enable_zipkin: null
   routing_api:
     enabled: null
   smoke_tests:
@@ -518,10 +565,10 @@ properties:
   system_domain_organization: system
   traffic_controller:
     disable_access_control: null
-    outgoing_port: 8080
     security_event_logging:
       enabled: false
     zone: null
+    etcd: (( grab meta.cf.cf-etcd ))
   uaa:
     admin:
       client_secret: (( grab meta.cf.creds.uaa.admin_client_secret ))
@@ -530,6 +577,13 @@ properties:
         countFailuresWithinSeconds: null
         lockoutAfterFailures: null
         lockoutPeriodSeconds: null
+    password:
+      policy:
+        minLength: null
+        requireUpperCaseCharacter: null
+        requireLowerCaseCharacter: null
+        requireDigit: null
+        requireSpecialCharacter: null
     ca_cert: null
     catalina_opts: -Xmx192m -XX:MaxPermSize=128m
     cc:
@@ -537,7 +591,7 @@ properties:
     clients:
       cc-service-dashboards:
         authorities: clients.read,clients.write,clients.admin
-        authorized-grant-types: client_credentials
+        authorized-grant-types: authorization_code,client_credentials
         scope: openid,cloud_controller_service_permissions.read
         secret: (( grab meta.cf.creds.uaa.cc_broker_secret ))
       cc_routing:
@@ -549,7 +603,7 @@ properties:
         authorities: uaa.none
         authorized-grant-types: password,refresh_token
         override: true
-        refresh-token-validity: 2592000
+        refresh-token-validity: 604800
         scope: cloud_controller.read,cloud_controller.write,openid,password.write,cloud_controller.admin,scim.read,scim.write,doppler.firehose,uaa.user,routing.router_groups.read,routing.router_groups.write
       cloud_controller_username_lookup:
         authorities: scim.userids
@@ -605,20 +659,46 @@ properties:
     no_ssl: null
     port: 8080
     require_https: true
-    restricted_ips_regex: 10\.\d{1,3}\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3}|169\.254\.\d{1,3}\.\d{1,3}|127\.\d{1,3}\.\d{1,3}\.\d{1,3}|172\.1[6-9]{1}\.\d{1,3}\.\d{1,3}|172\.2[0-9]{1}\.\d{1,3}\.\d{1,3}|172\.3[0-1]{1}\.\d{1,3}\.\d{1,3}
     scim:
       external_groups: null
       groups: null
       userids_enabled: true
       users:
-      - (( concat meta.cf.creds.admin.user "|" meta.cf.creds.admin.pass "|scim.write,scim.read,openid,cloud_controller.admin,clients.read,clients.write,doppler.firehose,routing.router_groups.read" ))
-    spring_profiles: null
+        - name: (( grab meta.cf.creds.admin.user ))
+          password: (( grab meta.cf.creds.admin.pass ))
+          groups:
+            - scim.write
+            - scim.read
+            - openid
+            - cloud_controller.admin
+            - clients.read
+            - clients.write
+            - doppler.firehose
+            - routing.router_groups.read
+            - routing.router_groups.write
     ssl:
       port: 8443
     sslCertificate: (( grab meta.cf.uaa.ssl_cert ))
     sslPrivateKey: (( grab meta.cf.uaa.ssl_key ))
     url: (( concat "https://uaa." meta.cf.system_domain ))
-    user: null
+    user:
+      authorities:
+        - openid
+        - scim.me
+        - cloud_controller.read
+        - cloud_controller.write
+        - cloud_controller_service_permissions.read
+        - password.write
+        - uaa.user
+        - approvals.me
+        - oauth.approvals
+        - notification_preferences.read
+        - notification_preferences.write
+        - profile
+        - roles
+        - user_attributes
+        - cloud_controller.user
+        - actuator.read
     zones:
       internal:
         hostnames:
@@ -664,7 +744,12 @@ properties:
         basic_auth_username: (( grab meta.cf.creds.cc.internal_api_user ))
       dropsonde_port: null
       log_level: null
-      traffic_controller_url: (( concat "wss://doppler." meta.cf.system_domain ":443" ))
+  netman:
+    disable: null
+  vxlan-policy-agent: null
+  garden-cni: null
+  cni-flannel: null
+  policy-server: null
   cflinuxfs2-rootfs:
     trusted_certs: null
   diego:
@@ -673,6 +758,7 @@ properties:
       cell_state_timeout: null
       dropsonde_port: null
       log_level: null
+      rep: (( grab meta.cf.rep ))
       starting_container_weight: null
     bbs:
       active_key_label: key1
@@ -685,19 +771,17 @@ properties:
         kick_task_duration_in_seconds: null
         repeat_interval_in_seconds: null
       dropsonde_port: null
+      enable_access_log: null
       encryption_keys:
       - label: key1
         passphrase: (( grab meta.cf.creds.diego.encryption_key ))
       etcd:
-        ca_cert: (( grab meta.cf.bbs.ca_cert ))
-        client_cert: (( grab meta.cf.bbs.client_cert ))
-        client_key: (( grab meta.cf.bbs.client_key ))
-        client_session_cache_size: null
-        machines:
-        - etcd.service.cf.internal
-        max_idle_conns_per_host: null
-        require_ssl: true
+        machines: []
+        ca_cert: ""
+        client_cert: ""
+        client_key: ""
       log_level: null
+      rep: (( grab meta.cf.rep ))
       require_ssl: true
       server_cert: (( grab meta.cf.bbs.server_cert ))
       server_key: (( grab meta.cf.bbs.server_key ))
@@ -707,6 +791,8 @@ properties:
         db_driver: (( grab meta.cf.diegodb.scheme ))
         max_open_connections: 500
         require_ssl: null
+    cfdot:
+      bbs: (( grab meta.cf.bbs ))
     executor:
       ca_certs_for_downloads: null
       container_metrics_report_interval: null
@@ -736,11 +822,17 @@ properties:
     rep:
       bbs: (( grab meta.cf.bbs ))
       dropsonde_port: null
+      enable_legacy_api_endpoints: false
       evacuation_timeout_in_seconds: 60
+      listen_addr_admin: null
       log_level: debug
       preloaded_rootfses:
       - cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs
       trusted_certs: null
+      require_tls: true
+      ca_cert: (( grab meta.cf.rep.ca_cert ))
+      server_cert: (( grab meta.cf.rep.server_cert ))
+      server_key: (( grab meta.cf.rep.server_key ))
     route_emitter:
       bbs: (( grab meta.cf.bbs ))
       dropsonde_port: null
@@ -769,15 +861,18 @@ properties:
     - 0.0.0.0/0
     destroy_containers_on_start: true
     disk_quota_enabled: null
+    dns_servers: null
     graph_cleanup_threshold_in_mb: 0
     insecure_docker_registry_list: null
     listen_address: 0.0.0.0:7777
     listen_network: tcp
     log_level: debug
+    max_containers: null
     network_mtu: null
+    network_plugin: null
+    network_plugin_extra_args: null
+    network_pool: null
     persistent_image_list:
     - /var/vcap/packages/cflinuxfs2/rootfs
   syslog_drain_binder:
-    etcd:
-      client_cert: null
-      client_key:  null
+    etcd: (( grab meta.cf.cf-etcd ))

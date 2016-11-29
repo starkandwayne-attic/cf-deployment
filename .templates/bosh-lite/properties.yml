@@ -8,11 +8,11 @@ meta:
       servers: (( grab jobs.consul_z1.networks.cf.static_ips ))
     gorouter:
       servers: (( grab jobs.router_z1.networks.cf.static_ips ))
-    etcd:
+    cf-etcd:
       servers: (( grab jobs.etcd_z1.networks.cf.static_ips ))
       cluster:
       - instances: 1
-        name: database_z1
+        name: etcd_z1
     nats:
       servers: (( grab jobs.nats_z1.networks.cf.static_ips ))
 
@@ -35,6 +35,13 @@ meta:
       scheme: postgres
       pass: (( vault meta.vault_prefix "/diegodb:password" ))
       user: diegoadmin
+      port: (( grab properties.postgres.config.port ))
+
+    routingdb:
+      host: (( grab jobs.postgres_z1.networks.cf.static_ips.0 ))
+      scheme: postgres
+      pass: (( vault meta.vault_prefix "/routingdb:password" ))
+      user: routingadmin
       port: (( grab properties.postgres.config.port ))
 
     blobstore_config:
@@ -66,6 +73,12 @@ properties:
       extensions:
       - citext
       - pgcrypto
+    - name: (( grab meta.cf.routingdb.dbname ))
+      users:
+      - (( grab meta.cf.routingdb.user ))
+      extensions:
+      - citext
+      - pgcrypto
     users:
     - username: (( grab meta.cf.uaadb.user ))
       password: (( grab meta.cf.uaadb.pass ))
@@ -73,6 +86,8 @@ properties:
       password: (( grab meta.cf.ccdb.pass ))
     - username: (( grab meta.cf.diegodb.user ))
       password: (( grab meta.cf.diegodb.pass ))
+    - username: (( grab meta.cf.routingdb.user ))
+      password: (( grab meta.cf.routingdb.pass ))
   postgres:
     config:
       port: 5432
