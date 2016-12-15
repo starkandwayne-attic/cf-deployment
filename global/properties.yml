@@ -738,6 +738,7 @@ properties:
       insecure_docker_registry_list: null
       log_level: debug
     tps:
+      traffic_controller_url: (( concat "wss://doppler." meta.cf.system_domain ":4443" ))
       bbs: (( grab meta.cf.bbs ))
       cc:
         basic_auth_password: (( grab meta.cf.creds.cc.internal_api_password ))
