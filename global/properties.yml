@@ -71,7 +71,7 @@ meta:
       server_cert: (( vault meta.vault_prefix "/certs/consul_server:cert" ))
       server_key: (( vault meta.vault_prefix "/certs/consul_server:key" ))
       ca_cert: (( vault meta.vault_prefix "/certs/internal_ca:cert" ))
-      encryption_key: (( vault meta.vault_prefix "/creds/cc:db_encryption_key" ))
+      encryption_key: (( vault meta.vault_prefix "/creds/consul:encryption_key" ))
 
     gorouter:
       servers: (( param "Enter the IPs of the gorouters" ))
