@@ -499,7 +499,7 @@ properties:
     notifications:
       url: null
     protocol: null
-    saml: null
+    saml:
       serviceProviderKey: (( grab meta.cf.login.saml.service_provider_key ))
       serviceProviderKeyPassword: ""
       serviceProviderCertificate: (( grab meta.cf.login.saml.service_provider_certificate ))
