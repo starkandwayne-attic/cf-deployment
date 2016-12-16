@@ -224,10 +224,7 @@ jobs:
     consul:
       agent:
         services:
-          loggregator_trafficcontroller:
-            name: loggregator_trafficcontroller
-            tags:
-              - z1
+          loggregator_trafficcontroller: {}
   resource_pool: small_z1
 - name: loggregator_trafficcontroller_z2
   instances: 1
@@ -242,10 +239,7 @@ jobs:
     consul:
       agent:
         services:
-          loggregator_trafficcontroller:
-            name: loggregator_trafficcontroller
-            tags:
-              - z2
+          loggregator_trafficcontroller: {}
   resource_pool: small_z2
 - name: router_z1
   instances: 1

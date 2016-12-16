@@ -183,10 +183,7 @@ jobs:
     consul:
       agent:
         services:
-          loggregator_trafficcontroller:
-            name: loggregator_trafficcontroller
-            tags:
-              - z1
+          loggregator_trafficcontroller: {}
   resource_pool: warden
   networks:
   - name: cf
