@@ -1,0 +1,8 @@
+---
+disk_pools:
+- name: small
+  disk_size: 10_240
+- name: medium
+  disk_size: 40_960
+- name: large
+  disk_size: 102_400
