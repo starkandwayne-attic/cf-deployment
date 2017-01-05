@@ -214,10 +214,7 @@ jobs:
     consul:
       agent:
         services:
-          loggregator_trafficcontroller:
-            name: loggregator_trafficcontroller
-            tags:
-              - z1
+          loggregator_trafficcontroller: {}
   resource_pool: small_z1
 - name: loggregator_trafficcontroller_z2
   instances: 1
@@ -232,10 +229,7 @@ jobs:
     consul:
       agent:
         services:
-          loggregator_trafficcontroller:
-            name: loggregator_trafficcontroller
-            tags:
-              - z2
+          loggregator_trafficcontroller: {}
   resource_pool: small_z2
 - name: router_z1
   instances: 1
@@ -275,15 +269,6 @@ jobs:
   properties:
     metron_agent:
       zone: z2
-- name: database_z3
-  instances: 1
-  .: (( inject meta.jobs.database ))
-  networks:
-  - name: cf3
-  resource_pool: large_z3
-  properties:
-    metron_agent:
-      zone: z3
 - name: brain_z1
   instances: 1
   .: (( inject meta.jobs.brain ))

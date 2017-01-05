@@ -106,6 +106,10 @@ meta:
       user: (( param "Specify the user to connect to the uaadb" ))
       pass: (( param "Specify the password of the uaadb user" ))
       dbname: uaadb
+    login:
+      saml:
+        service_provider_key: (( vault meta.vault_prefix "/certs/uaa:key" ))
+        service_provider_certificate: (( vault meta.vault_prefix "/certs/uaa:cert" ))
 
     diegodb:
       host: (( param "What hostname/IP is the diegodb available at?" ))
@@ -230,6 +234,16 @@ properties:
     - user_bosh_deployments
     default_to_diego_backend: true
     development_mode: false
+    diego:
+      insecure_docker_registry_list: null
+      temporary_local_staging: null
+      temporary_local_tasks: null
+      temporary_local_apps: null
+      use_privileged_containers_for_staging: null
+      bbs:
+        ca_cert: null
+        client_cert: null
+        client_key: null
     directories: null
     disable_custom_buildpacks: false
     droplets:
@@ -485,7 +499,10 @@ properties:
     notifications:
       url: null
     protocol: null
-    saml: null
+    saml:
+      serviceProviderKey: (( grab meta.cf.login.saml.service_provider_key ))
+      serviceProviderKeyPassword: ""
+      serviceProviderCertificate: (( grab meta.cf.login.saml.service_provider_certificate ))
     self_service_links_enabled: null
     smtp:
       host: null
