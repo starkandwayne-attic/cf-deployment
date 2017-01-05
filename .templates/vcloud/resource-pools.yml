@@ -1,0 +1,85 @@
+---
+meta:
+  resource_pools:
+    small:
+      stemcell: (( grab meta.stemcell ))
+      cloud_properties:
+        cpu: 1
+        ram: 1_024
+        disk: 18_000
+    medium:
+      stemcell: (( grab meta.stemcell ))
+      cloud_properties:
+        cpu: 2
+        ram: 2_048
+        disk: 18_000
+    large:
+      stemcell: (( grab meta.stemcell ))
+      cloud_properties:
+        cpu: 4
+        ram: 4_096
+        disk: 18_000
+    router:
+      stemcell: (( grab meta.stemcell ))
+      cloud_properties:
+        cpu: 2
+        ram: 4_096
+        disk: 18_000
+    runner:
+      stemcell: (( grab meta.stemcell ))
+      cloud_properties:
+        cpu: 4
+        ram: 4_096
+        disk: 18_000
+
+resource_pools:
+  - name: errand
+    stemcell: (( grab meta.stemcell ))
+    cloud_properties:
+      cpu: 1
+      ram: 1_024
+      disk: 4_096
+
+  - name: small_z1
+    .: (( inject meta.resource_pools.small ))
+  - name: small_z2
+    .: (( inject meta.resource_pools.small ))
+  - name: small_z3
+    .: (( inject meta.resource_pools.small ))
+
+  - name: medium_z1
+    .: (( inject meta.resource_pools.medium ))
+  - name: medium_z2
+    .: (( inject meta.resource_pools.medium ))
+  - name: medium_z3
+    .: (( inject meta.resource_pools.medium ))
+
+  - name: large_z1
+    .: (( inject meta.resource_pools.large ))
+  - name: large_z2
+    .: (( inject meta.resource_pools.large ))
+  - name: large_z3
+    .: (( inject meta.resource_pools.large ))
+
+  - name: router_z1
+    .: (( inject meta.resource_pools.router ))
+  - name: router_z2
+    .: (( inject meta.resource_pools.router ))
+  - name: router_z3
+    .: (( inject meta.resource_pools.router ))
+
+  - name: runner_z1
+    .: (( inject meta.resource_pools.runner ))
+  - name: runner_z2
+    .: (( inject meta.resource_pools.runner ))
+  - name: runner_z3
+    .: (( inject meta.resource_pools.runner ))
+
+compilation:
+  workers: 3
+  network: cf2
+  reuse_compilation_vms: true
+  cloud_properties:
+    cpu: 4
+    ram: 2048
+    disk: 10240
