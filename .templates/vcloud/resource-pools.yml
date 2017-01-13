@@ -7,30 +7,40 @@ meta:
         cpu: 1
         ram: 1_024
         disk: 18_000
+      env:
+        vapp: (( grab meta.type ))
     medium:
       stemcell: (( grab meta.stemcell ))
       cloud_properties:
         cpu: 2
         ram: 2_048
         disk: 18_000
+      env:
+        vapp: (( grab meta.type ))
     large:
       stemcell: (( grab meta.stemcell ))
       cloud_properties:
         cpu: 4
         ram: 4_096
         disk: 18_000
+      env:
+        vapp: (( grab meta.type ))
     router:
       stemcell: (( grab meta.stemcell ))
       cloud_properties:
         cpu: 2
         ram: 4_096
         disk: 18_000
+      env:
+        vapp: (( grab meta.type ))
     runner:
       stemcell: (( grab meta.stemcell ))
       cloud_properties:
         cpu: 4
         ram: 4_096
         disk: 18_000
+      env:
+        vapp: (( grab meta.type ))
 
 resource_pools:
   - name: errand
@@ -39,6 +49,8 @@ resource_pools:
       cpu: 1
       ram: 1_024
       disk: 4_096
+    env:
+      vapp: (( grab meta.type ))
 
   - name: small_z1
     .: (( inject meta.resource_pools.small ))
@@ -83,3 +95,5 @@ compilation:
     cpu: 4
     ram: 2048
     disk: 10240
+  env:
+    vapp: (( grab meta.type ))
