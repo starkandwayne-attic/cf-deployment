@@ -16,20 +16,32 @@ meta:
         name: etcd_z3
     nats:
       servers: (( grab jobs.nats_z1.networks.cf1.static_ips jobs.nats_z2.networks.cf2.static_ips ))
-
-    ccdb:
-      scheme: mysql
-      port: 3306
+    db:
+      servers: (( grab jobs.postgres_z1.networks.cf1.static_ips jobs.postgres_z2.networks.cf2.static_ips ))
     uaadb:
-      scheme: mysql
-      port: 3306
+      host: (( grab jobs.postgres_z1.networks.cf1.static_ips.0 ))
+      scheme: postgresql
+      user: uaaadmin
+      pass: (( vault meta.vault_prefix "/uaadb:password" ))
+      port: (( grab properties.postgres.config.port ))
+    ccdb:
+      host: (( grab jobs.postgres_z1.networks.cf1.static_ips.0 ))
+      scheme: postgres
+      pass: (( vault meta.vault_prefix "/ccdb:password" ))
+      user: ccadmin
+      port: (( grab properties.postgres.config.port ))
     diegodb:
-      scheme: mysql
-      port: 3306
+      host: (( grab jobs.postgres_z1.networks.cf1.static_ips.0 ))
+      scheme: postgres
+      pass: (( vault meta.vault_prefix "/diegodb:password" ))
+      user: diegoadmin
+      port: (( grab properties.postgres.config.port ))
     routingdb:
-      scheme: mysql
-      port: 3306
-
+      host: (( grab jobs.postgres_z1.networks.cf1.static_ips.0 ))
+      scheme: postgres
+      pass: (( vault meta.vault_prefix "/routingdb:password" ))
+      user: routingadmin
+      port: (( grab properties.postgres.config.port ))
 
     blobstore_config:
       blobstore_type: fog
@@ -45,14 +57,50 @@ meta:
       blobstore: ~
 
 properties:
-  databases: ~
   nfs_server: ~
   blobstore: ~
-  logger_endpoint:
-    port: 4443
-
-  diego:
-    bbs:
-      sql:
-        db_driver: mysql
-        db_connection_string: (( concat meta.cf.diegodb.user ":" meta.cf.diegodb.pass "@tcp(" meta.cf.diegodb.host ":" meta.cf.diegodb.port ")/" meta.cf.diegodb.dbname ))
+  pgpool:
+    databases:
+    - name: (( grab meta.cf.ccdb.dbname ))
+      users:
+      - (( grab meta.cf.ccdb.user ))
+      extensions:
+      - citext
+      - pgcrypto
+    - name: (( grab meta.cf.uaadb.dbname ))
+      users:
+      - (( grab meta.cf.uaadb.user ))
+      extensions:
+      - citext
+      - pgcrypto
+    - name: (( grab meta.cf.diegodb.dbname ))
+      users:
+      - (( grab meta.cf.diegodb.user ))
+      extensions:
+      - citext
+      - pgcrypto
+    - name: (( grab meta.cf.routingdb.dbname ))
+      users:
+      - (( grab meta.cf.routingdb.user ))
+      extensions:
+      - citext
+      - pgcrypto
+    users:
+    - username: (( grab meta.cf.uaadb.user ))
+      password: (( grab meta.cf.uaadb.pass ))
+    - username: (( grab meta.cf.ccdb.user ))
+      password: (( grab meta.cf.ccdb.pass ))
+    - username: (( grab meta.cf.diegodb.user ))
+      password: (( grab meta.cf.diegodb.pass ))
+    - username: (( grab meta.cf.routingdb.user ))
+      password: (( grab meta.cf.routingdb.pass ))
+  postgres:
+    config:
+      port: 5432
+    hba:
+    - host all all 0.0.0.0/0 md5
+    - host all all ::/0 md5
+    replication:
+      enabled: true
+      master: (( grab meta.cf.db.servers.0 ))
+      pool: (( grab meta.cf.db.servers ))
