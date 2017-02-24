@@ -353,7 +353,7 @@ jobs:
   instances: 1
   .: (( inject meta.jobs.access ))
   networks:
-  - name: router1
+  - name: cf1
   resource_pool: access_z1
   properties:
     metron_agent:
@@ -362,7 +362,7 @@ jobs:
   instances: 1
   .: (( inject meta.jobs.access ))
   networks:
-  - name: router2
+  - name: cf2
   resource_pool: access_z2
   properties:
     metron_agent:
