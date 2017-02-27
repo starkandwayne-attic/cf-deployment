@@ -94,7 +94,7 @@ jobs:
       zone: z3
   resource_pool: small_z3
 - name: postgres_z1
-  instances: 1
+  instances: 0
   .: (( inject meta.jobs.postgres ))
   networks:
   - name: cf1
