@@ -17,19 +17,6 @@ meta:
     nats:
       servers: (( grab jobs.nats_z1.networks.cf1.static_ips jobs.nats_z2.networks.cf2.static_ips ))
 
-    ccdb:
-      scheme: mysql
-      port: 3306
-    uaadb:
-      scheme: mysql
-      port: 3306
-    diegodb:
-      scheme: mysql
-      port: 3306
-    routingdb:
-      scheme: mysql
-      port: 3306
-
     blobstore_config:
       blobstore_type: fog
       webdav_config: ~
@@ -49,9 +36,3 @@ properties:
   blobstore: ~
   logger_endpoint:
     port: 4443
-
-  diego:
-    bbs:
-      sql:
-        db_driver: mysql
-        db_connection_string: (( concat meta.cf.diegodb.user ":" meta.cf.diegodb.pass "@tcp(" meta.cf.diegodb.host ":" meta.cf.diegodb.port ")/" meta.cf.diegodb.dbname ))
