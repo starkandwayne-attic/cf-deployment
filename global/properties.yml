@@ -805,7 +805,7 @@ properties:
       server_key: (( grab meta.cf.bbs.server_key ))
       sql:
         ca_cert: null
-        db_connection_string: (( concat meta.cf.diegodb.scheme "://" meta.cf.diegodb.user ":" meta.cf.diegodb.pass "@" meta.cf.diegodb.host ":" meta.cf.diegodb.port "/" meta.cf.diegodb.dbname ))
+        db_connection_string: (( "Specify db_connection_string in the format of diegodb_scheme://diegodb_user:diegodb_pass@diegodb_host:diegodb_port/diegodb_dbname for postgresql or diegodb_user:diegodb_pass@tcp(diegodb_host:diegodb_port)/diegodb_dbname for mysql" ))
         db_driver: (( grab meta.cf.diegodb.scheme ))
         max_open_connections: 500
         require_ssl: null

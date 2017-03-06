@@ -52,23 +52,16 @@ differences, however:
    explicit `system.` to all the system domains for clarity, and to help
    prevent unanticipated outages from apps or route creation that overlaps
    with things like `login`, or `api`.
-2. The database is provided from [postgres-boshrelease](https://github.com/cloudfoundry-community/postgres-boshrelease),
-   rather than the one built into [cf-release](https://github.com/cloudfoundry/cf-release).
-   This was done because that release is currently used in vSphere deployments,
-   to provide a database with a hot-standby replica, as there is no RDS-like
-   solution available for vSphere, and HA postgres solutions are still being
-   evaluated.
+2. The database is provided from [postgres-boshrelease](https://github.com/cloudfoundry-community/postgres-boshrelease), rather than the one built into [cf-release](https://github.com/cloudfoundry/cf-release). This was done because that release is currently used in vSphere deployments, to provide a database with a hot-standby replica, as there is no RDS-like solution available for vSphere, and HA postgres solutions are still being evaluated.
 
 Once deployed, you can hit your bosh-lite Cloud Foundry at https://api.system.bosh-lite.com/
-
 
 Deploying on AWS
 ======================================
 
 Deploying CF on AWS from these templates should get you a production-worthy CF deployment.
 Credentials and certs will be unique and stored in Vault, all services will be HA. The
-CCDB/UAADB are expected to use RDS, and the CF blobstore is expected to use S3. Amazon ELBs
-will be used in front of the gorouters for load balancing, and SSL termination.
+CCDB,UAADB,and DIEGODB are expected to use RDS, and the CF blobstore is expected to use S3. Amazon ELBs will be used in front of the gorouters for load balancing, and SSL termination.
 
 Things you will need to bring to the table:
 
@@ -79,8 +72,7 @@ Things you will need to bring to the table:
 2. Two subnets (each on a different AZ) for the gorouter VMs, with an internet gateway
    attached. This will enable you to isolate the traffic inbound from the internet from
    the rest of the CF deployment.
-3. Two RDS instances (with read-replicas to run backups against). One will be for the
-   `uaadb`, another for the `ccdb`.
+3. Three RDS instances:`uaadb`,`ccdb`,and `diegodb` (with read-replicas if we run online shield backups for them).
 4. An SSL certificate signed for the domain you want to run Cloud Foundry on.
 5. An ELB configured to forward HTTP, HTTPS, and TCP+SSL on port 4443. It should be given
    the SSL cert/private key mentioned above. HTTP/HTTPS will handle most traffic going to
@@ -100,8 +92,7 @@ Parameters that will need to be filled out:
    allowing access to the internal IPs of the services networks
 4. Cloud Foundry base domain - we will prepend this with `*.system.` and `*.run.` to create
    the CF system + app default domains.
-5. UAADB + CCDB connection info - This should be the RDS hostname/user/password. We default
-   to mysql, so if you use postgres on RDS, that will need to be updated as well
+5. UAADB,CCDB and DIEGODB connection info - This should be the RDS hostname/user/password. You also need to specify the db scheme and port.
 6. Blobstore configuration - We expect to be using S3 (via fog) for the CF blobstore. It
    will need keys, and a region defined.
 
@@ -110,9 +101,7 @@ Deploying on vSphere
 
 Deploying CF on vSphere from these templates should get you most of the way to a production
 worthy CF deployment. Credentials and certs will be unique and stored in Vault. All services
-will be HA. The CCDB/UAADB will be running on postgres_z1, with an automated replica on
-postgres_z2 (manual failover is required at this time). There is no load balancer layer
-or SSL termination layer provided, as must people will be bringing their own hardware
+will be HA. The CCDB, UAADB and DIEGODB will be running on postgres_z1, with an automated replica on postgres_z2 (manual failover is required at this time). There is no load balancer layeror SSL termination layer provided, as must people will be bringing their own hardware
 solution (F5s, etc) to the table for this.
 
 Prerequisites:
@@ -143,7 +132,7 @@ Parameters that will need to be filled out:
 
 Notes
 ======================================
-
+It also supports deploying on Google,Openstack and Vcloud. The process is similar. 
 For more information, check out the [Genesis][1] repo, or `genesis help`.
 You can download the Genesis program from [Github][1]
 
