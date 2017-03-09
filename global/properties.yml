@@ -102,7 +102,7 @@ meta:
     uaadb:
       host: (( param "What hostname/IP is the uaadb available at?" ))
       port: (( param "What port is the uaadb listening on?" ))
-      scheme: (( param "Specify the type of database the uaadb is (postgres, mysql)" ))
+      scheme: (( param "Specify the type of database the uaadb is (postgresql, mysql)" ))
       user: (( param "Specify the user to connect to the uaadb" ))
       pass: (( param "Specify the password of the uaadb user" ))
       dbname: uaadb
