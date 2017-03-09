@@ -97,3 +97,7 @@ properties:
     - host all all ::/0 md5
     replication:
       enabled: false
+  diego:
+    bbs:
+      sql:
+        db_connection_string: (( concat meta.cf.diegodb.scheme "://" meta.cf.diegodb.user ":" meta.cf.diegodb.pass "@" meta.cf.diegodb.host ":" meta.cf.diegodb.port "/" meta.cf.diegodb.dbname ))
