@@ -119,14 +119,6 @@ meta:
       pass: (( param "Specify the password of the diegodb user" ))
       dbname: diegodb
 
-    routingdb:
-      host: (( param "What hostname/IP is the routingdb available at?" ))
-      port: (( param "What port is the routingdb listening on?" ))
-      scheme: (( param "Specify the type of database the routingdb is (postgres, mysql)" ))
-      user: (( param "Specify the user to connect to the routingdb" ))
-      pass: (( param "Specify the password of the routingdb user" ))
-      dbname: routingdb
-
     bbs:
       api_location: null
       ca_cert: (( vault meta.vault_prefix "/certs/internal_ca:cert" ))
