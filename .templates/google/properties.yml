@@ -25,9 +25,6 @@ meta:
     diegodb:
       pass: (( vault meta.vault_prefix "/diegodb:password" ))
       user: diegoadmin
-    routingdb:
-      pass: (( vault meta.vault_prefix "/routingdb:password" ))
-      user: routingadmin
 
     blobstore_config:
       blobstore_type: fog
